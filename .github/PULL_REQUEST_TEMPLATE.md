@@ -1,8 +1,12 @@
 ## What this PR does
-[One sentence]
+
+[One sentence describing the changes]
+
+**AI involvement:** [None / Tool used and how]
 
 ## Decision (required if a significant choice was made)
-Decision: [what was chosen]
-Why: [what problem this solves or what alternative it beat]
-Alternative rejected: [optional]
-Led by: [name]
+
+- **Decision:** [What was chosen]
+- **Why:** [Why this approach was chosen]
+- **Alternative rejected:** [Optional]
+- **Led by:** [Name]
