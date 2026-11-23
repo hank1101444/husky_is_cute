@@ -68,12 +68,15 @@ def mocked_repo(rsps):
     "  github.com/hank1101444/husky_is_cute/tree/main/docs ",
     "http://github.com/hank1101444/husky_is_cute",
     "https://www.github.com/hank1101444/husky_is_cute",
+    "https://github.com/hank1101444/husky_is_cute?tab=readme-ov-file",
+    "https://github.com/hank1101444/husky_is_cute#readme",
 ])
 def test_parse_repo_url_variants(url):
     assert parse_repo_url(url) == ("hank1101444", "husky_is_cute")
 
 
-@pytest.mark.parametrize("url", ["", "   ", "https://gitlab.com/a/b", "https://github.com/onlyowner"])
+@pytest.mark.parametrize("url", ["", "   ", "https://gitlab.com/a/b", "https://github.com/onlyowner",
+                                 "https://github.com/o/r r"])
 def test_parse_repo_url_rejects(url):
     with pytest.raises(InvalidRepoUrl):
         parse_repo_url(url)
@@ -167,3 +170,11 @@ def test_raw_text_decoded_as_utf8_without_charset(rsps):
     rsps.get(f"{base}/issues", json=[])
     rsps.get(f"{base}/commits", json=[])
     assert fetch_snapshot("https://github.com/o/zh").source("README").text == "# 專案說明"
+
+
+def test_progress_callback_reports_steps(mocked_repo):
+    steps = []
+    fetch_snapshot("https://github.com/o/r", progress=steps.append)
+    assert any("README" in s for s in steps)
+    assert any("PR 留言 1/1" in s for s in steps)
+    assert any("commit" in s for s in steps)

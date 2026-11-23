@@ -2,6 +2,7 @@ from types import SimpleNamespace
 
 import anthropic
 import httpx2
+import pydantic
 import pytest
 
 from onboarding_map.mapper import MapperError, draft_map
@@ -73,3 +74,24 @@ def test_missing_parsed_output(snap):
 def test_api_errors_are_friendly(snap, exc, msg):
     with pytest.raises(MapperError, match=msg):
         draft_map(snap, client=FakeClient(raises=exc), model="m")
+
+
+def _truncated_json_error():
+    try:
+        OnboardingMapDraft.model_validate_json('{"modules": [{"id": "a", "na')
+    except pydantic.ValidationError as exc:
+        return exc
+    raise AssertionError("expected a ValidationError")
+
+
+def test_unparseable_output_is_friendly(snap):
+    # The real SDK validates JSON inside parse(); a max_tokens cut-off raises ValidationError there.
+    with pytest.raises(MapperError, match="截斷"):
+        draft_map(snap, client=FakeClient(raises=_truncated_json_error()), model="m")
+
+
+def test_duplicate_module_ids_are_renamed(snap, good_draft):
+    good_draft.modules[1].id = "a"
+    fc = FakeClient(result=SimpleNamespace(stop_reason="end_turn", parsed_output=good_draft))
+    out = draft_map(snap, client=fc, model="m")
+    assert [m.id for m in out.modules] == ["a", "a-2"]

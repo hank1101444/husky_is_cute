@@ -88,13 +88,26 @@ def render_module(store: Store, m: LoadedMap, module: DraftModule, role: str) ->
             st.markdown(f"❓ {q.text}")
             st.markdown(f"💬 {q.answer}" if q.answer else "（等待既有成員回答）")
         if role == ROLE_ALICE:
-            text = st.text_area("你的問題", key=f"ask-{module.id}")
-            if st.button("在這個模組提問", key=f"ask-btn-{module.id}"):
-                if text.strip():
-                    store.ask(m.map_id, module.id, text)
-                    st.success("已送出，既有成員回答後會顯示在這裡")
-                else:
-                    st.error("問題不能是空的")
+            box = f"ask-{module.id}"
+            st.text_area("你的問題", key=box)
+            st.button("在這個模組提問", key=f"ask-btn-{module.id}", on_click=_submit_question,
+                      args=(store, m.map_id, module.id, box))
+            note = st.session_state.pop(f"{box}-note", None)
+            if note == "sent":
+                st.success("已送出，既有成員回答後會顯示在這裡")
+            elif note == "empty":
+                st.error("問題不能是空的")
+
+
+def _submit_question(store: Store, map_id: int, module_id: str, box: str) -> None:
+    """Button callback: runs before the rerun, so the question shows and the box can be cleared."""
+    text = st.session_state.get(box, "")
+    if text.strip():
+        store.ask(map_id, module_id, text)
+        st.session_state[box] = ""
+        st.session_state[f"{box}-note"] = "sent"
+    else:
+        st.session_state[f"{box}-note"] = "empty"
 
 
 def render_generator(store: Store, settings) -> None:
@@ -105,16 +118,24 @@ def render_generator(store: Store, settings) -> None:
     if not os.getenv("ANTHROPIC_API_KEY"):
         st.error("尚未設定 ANTHROPIC_API_KEY，請在 .env 填入金鑰後重新啟動")
         return
+    status = st.status("步驟 1/3：讀取 GitHub 資料…", expanded=True)
     try:
-        with st.spinner("正在讀取 repo 並產生地圖…"):
-            snapshot = github_fetcher.fetch_snapshot(url, token=settings.github_token)
+        with status:
+            snapshot = github_fetcher.fetch_snapshot(url, token=settings.github_token, progress=st.write)
+            st.write(f"讀到 {len(snapshot.tree)} 個檔案、{len(snapshot.sources)} 筆來源")
+            status.update(label="步驟 2/3：Claude 產生地圖中（小 repo 約 20 秒，大 repo 可能 1–2 分鐘）…")
+            st.write(f"送出給 {settings.anthropic_model}，等待回應…")
             draft = mapper.draft_map(snapshot, model=settings.anthropic_model)
+            status.update(label="步驟 3/3：驗證來源並儲存…")
             result = mapper.validate(draft, snapshot)
             map_id = store.save_map(snapshot, draft, result)
+            status.update(label="完成", state="complete")
     except (github_fetcher.GitHubError, mapper.MapperError) as exc:
+        status.update(label="失敗", state="error")
         st.error(str(exc))
         return
-    st.session_state["map_id"] = map_id
+    # The sidebar selectbox (key "map_id") already exists in this run; hand the id over via another key.
+    st.session_state["select_map_id"] = map_id
     st.rerun()
 
 
@@ -149,6 +170,8 @@ def main() -> None:
     role = st.sidebar.radio("角色", [ROLE_BOB, ROLE_ALICE], key="role")
     maps = store.list_maps()
     map_id = None
+    if "select_map_id" in st.session_state:
+        st.session_state["map_id"] = st.session_state.pop("select_map_id")
     if maps:
         labels = {mid: f"{url} · {created[:16].replace('T', ' ')}" for mid, url, created in maps}
         if st.session_state.get("map_id") not in labels:

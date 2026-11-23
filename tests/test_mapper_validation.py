@@ -76,3 +76,23 @@ def test_user_prompt_lists_truncation(snap):
 def test_system_prompt_rules():
     assert NO_REASON in SYSTEM_PROMPT
     assert "繁體中文" in SYSTEM_PROMPT
+
+
+def test_duplicate_relation_ids_are_unique(snap, good_draft):
+    dup = good_draft.modules[0].relations[0].model_copy()
+    dup.reason = "另一個原因。"
+    good_draft.modules[0].relations.append(dup)
+    ids = [c.id for c in validate(good_draft, snap).claims]
+    assert len(ids) == len(set(ids))
+    assert {"m:a:rel:b", "m:a:rel:b:2"} <= set(ids)
+
+
+def test_reading_target_must_exist(snap, good_draft):
+    good_draft.reading_order[0].target = "src/ghost.py"
+    c = claim(validate(good_draft, snap), "r:0")
+    assert not c.valid and any("src/ghost.py" in p for p in c.problems)
+
+
+def test_reading_target_may_be_source_id(snap, good_draft):
+    good_draft.reading_order[0].target = "PR#1"
+    assert claim(validate(good_draft, snap), "r:0").valid

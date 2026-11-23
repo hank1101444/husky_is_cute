@@ -99,3 +99,28 @@ def test_mapper_error_shown_not_raised(app_env, monkeypatch, snap):
     at.button(key="generate").click().run()
     assert not at.exception
     assert "拒絕" in at.error[0].value
+
+
+def test_generate_second_map_selects_it(seeded_flagged, monkeypatch, snap, good_draft):
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "x")
+    monkeypatch.setattr("onboarding_map.github_fetcher.fetch_snapshot", lambda *a, **k: snap)
+    monkeypatch.setattr("onboarding_map.mapper.draft_map", lambda *a, **k: good_draft)
+    at = run_app()
+    at.text_input(key="repo_url").input("https://github.com/o/r")
+    at.button(key="generate").click().run()
+    assert not at.exception
+    maps = seeded_flagged.store.list_maps()
+    assert len(maps) == 2
+    assert at.sidebar.selectbox[0].value == maps[0][0] != seeded_flagged.map_id
+
+
+def test_alice_question_shows_and_box_clears(seeded_flagged):
+    at = run_app()
+    at.sidebar.radio[0].set_value("新成員 (Alice)").run()
+    at.text_area(key="ask-b").input("模組 b 做什麼？").run()
+    at.button(key="ask-btn-b").click().run()
+    assert not at.exception
+    assert "模組 b 做什麼？" in page_text(at)
+    assert at.text_area(key="ask-b").value == ""
+    at.button(key="ask-btn-b").click().run()
+    assert len(seeded_flagged.store.questions(seeded_flagged.map_id, "b")) == 1

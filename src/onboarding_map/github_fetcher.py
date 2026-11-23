@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import sys
+from typing import Callable
 
 import requests
 
@@ -12,7 +13,9 @@ from onboarding_map.models import RepoSnapshot, SourceItem
 
 API_BASE = "https://api.github.com"
 TIMEOUT_S = 15
-_URL_RE = re.compile(r"^(?:https?://)?(?:www\.)?github\.com/([^/\s]+)/([^/\s]+?)(?:\.git)?(?:/.*)?$")
+_URL_RE = re.compile(
+    r"^(?:https?://)?(?:www\.)?github\.com/([A-Za-z0-9_.-]+)/([A-Za-z0-9_.-]+?)(?:\.git)?(?:[/?#].*)?$"
+)
 
 
 class GitHubError(Exception):
@@ -76,14 +79,19 @@ def _decision_sections(text: str) -> list[tuple[str, str]]:
     return [(h, b.strip()) for h, b in sections]
 
 
-def fetch_snapshot(url: str, token: str | None = None, limits: FetchLimits = FetchLimits()) -> RepoSnapshot:
+def fetch_snapshot(url: str, token: str | None = None, limits: FetchLimits = FetchLimits(),
+                   progress: Callable[[str], None] | None = None) -> RepoSnapshot:
+    """Read the repo. ``progress`` (optional) receives short zh-TW step messages for the UI."""
+    report = progress or (lambda _msg: None)
     owner, repo = parse_repo_url(url)
+    report(f"連線到 GitHub：{owner}/{repo}")
     gh = _Client(owner, repo, token)
     repo_url = f"https://github.com/{owner}/{repo}"
     branch = gh.get("").json().get("default_branch", "main")
     sources: list[SourceItem] = []
     truncation: dict[str, str] = {}
 
+    report("讀取 README 與檔案清單")
     readme = gh.get("/readme", raw=True, missing_ok=(404,))
     if readme is not None:
         sources.append(SourceItem(id="README", type="readme", title="README", url=f"{repo_url}#readme",
@@ -97,18 +105,21 @@ def fetch_snapshot(url: str, token: str | None = None, limits: FetchLimits = Fet
         if data.get("truncated"):
             truncation["tree"] = "檔案太多，GitHub 只回傳部分檔案清單"
 
+    report("讀取 DECISIONS.md")
     decisions = gh.get("/contents/DECISIONS.md", raw=True, missing_ok=(404,))
     if decisions is not None:
         for heading, body in _decision_sections(_utf8(decisions)):
             sources.append(SourceItem(id=f"DECISION:{heading}", type="decision", title=heading,
                                       url=f"{repo_url}/blob/{branch}/DECISIONS.md", text=body))
 
+    report("讀取 PR 清單")
     pulls = gh.get("/pulls", params={"state": "all", "sort": "updated", "direction": "desc",
                                      "per_page": limits.pulls}).json()
     if len(pulls) >= limits.pulls:
         truncation["pulls"] = f"只顯示最新 {limits.pulls} 筆"
-    for pr in pulls:
+    for i, pr in enumerate(pulls, start=1):
         n = pr["number"]
+        report(f"讀取 PR 留言 {i}/{len(pulls)}")
         sources.append(SourceItem(id=f"PR#{n}", type="pr", title=pr.get("title") or "",
                                   url=pr.get("html_url") or f"{repo_url}/pull/{n}", text=pr.get("body") or ""))
         for c in gh.get(f"/issues/{n}/comments").json():
@@ -117,6 +128,7 @@ def fetch_snapshot(url: str, token: str | None = None, limits: FetchLimits = Fet
                                       title=f"PR #{n} comment by {login}",
                                       url=c.get("html_url") or f"{repo_url}/pull/{n}", text=c.get("body") or ""))
 
+    report("讀取 issue")
     issues = gh.get("/issues", params={"state": "all", "per_page": limits.issues}).json()
     if len(issues) >= limits.issues:
         truncation["issues"] = f"只顯示最新 {limits.issues} 筆"
@@ -128,6 +140,7 @@ def fetch_snapshot(url: str, token: str | None = None, limits: FetchLimits = Fet
                                   url=issue.get("html_url") or f"{repo_url}/issues/{n}",
                                   text=issue.get("body") or ""))
 
+    report("讀取 commit 紀錄")
     commits_resp = gh.get("/commits", params={"per_page": limits.commits}, missing_ok=(409,))
     commits = commits_resp.json() if commits_resp is not None else []
     if len(commits) >= limits.commits:

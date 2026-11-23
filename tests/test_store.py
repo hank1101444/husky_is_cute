@@ -103,3 +103,9 @@ def test_persists_across_instances(store, saved, tmp_path):
     store.review_claim(saved, "m:a:purpose", "confirm")
     again = Store(tmp_path / "nested" / "t.db")
     assert get_claim(again, saved, "m:a:purpose").status == "verified"
+
+
+def test_duplicate_relations_can_be_saved(store, snap, good_draft):
+    good_draft.modules[0].relations.append(good_draft.modules[0].relations[0].model_copy())
+    map_id = store.save_map(snap, good_draft, validate(good_draft, snap))
+    assert len(store.load_map(map_id).claims) == 5
