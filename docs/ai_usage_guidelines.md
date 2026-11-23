@@ -56,8 +56,9 @@ are in `CLAUDE.md`.
   and how many of them failed before the change; and the full offline result as
   `N passed, M deselected`. If `src/onboarding_map/prompts.py` changed, it also gives the
   `pytest -m live` result before and after the change; otherwise it says
-  "N/A: prompts.py unchanged". A PR that changes no code says "Docs-only, no tests run" and does not
-  claim that tests passed. A PR is not merged while any offline test fails.
+  "N/A: prompts.py unchanged". For documentation-only PRs, report the tests actually performed. If
+  no tests were run, state "Docs-only, no tests run". Never claim that unexecuted tests passed. A PR
+  is not merged while any offline test fails.
   *Check:* the reviewer finds each of these items in the PR description.
 - **Human review by the code steward (Rule 3, revised 2026-11-24):** before a PR is merged, a member
   other than the author (normally the current code steward, see `DECISIONS.md`) approves it with a
