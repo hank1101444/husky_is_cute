@@ -27,3 +27,9 @@
 **Why:** Our test users are Taiwanese students. Showing the map before review resolves the CP1 open question (§3.3) with its fallback: rely on the "inferred" label plus source links instead of blocking on the existing member.
 **Alternative rejected:** English output; a "publish" step before the new member can see the map.
 **Led by:** Hank
+
+## 2026-11-23 — Code steward handoff: Hank → Tiffany
+**What:** TiffanyChen-tc is the code steward from today, taking over from Hank. Her first action as steward is reviewing the MVP pull requests (this PR, then the MVP code and the UI guide).
+**Why:** Hank wrote the MVP pull requests and cannot approve his own work. CP2 also requires every member to serve as steward at least once and to approve two PRs as steward with a real comment, so we rotate now instead of at the end.
+**Alternative rejected:** Hank staying steward until merge day. That would leave him reviewing nothing of his own and the others with no steward record.
+**Led by:** Hank
