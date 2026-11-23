@@ -109,3 +109,50 @@ def test_duplicate_relations_can_be_saved(store, snap, good_draft):
     good_draft.modules[0].relations.append(good_draft.modules[0].relations[0].model_copy())
     map_id = store.save_map(snap, good_draft, validate(good_draft, snap))
     assert len(store.load_map(map_id).claims) == 5
+
+
+# Regression: stats reflect each claim's *current* status. "edited" counts claims that are
+# currently verified and were edited at least once; an edited-then-flagged claim is only flagged.
+def counts(s):
+    inferred = s.total - s.accepted_without_edit - s.edited - s.flagged
+    return {"accepted": s.accepted_without_edit, "edited": s.edited, "flagged": s.flagged, "inferred": inferred}
+
+
+def test_stats_edited_then_flagged_counts_only_as_flagged(store, saved):
+    store.review_claim(saved, "r:0", "edit", "x")
+    store.review_claim(saved, "r:0", "flag")
+    assert counts(store.stats(saved)) == {"accepted": 0, "edited": 0, "flagged": 1, "inferred": 3}
+
+
+def test_stats_edited_and_still_verified_counts_as_edited(store, saved):
+    store.review_claim(saved, "r:0", "edit", "x")
+    assert counts(store.stats(saved)) == {"accepted": 0, "edited": 1, "flagged": 0, "inferred": 3}
+
+
+def test_stats_confirm_without_edit_counts_as_accepted(store, saved):
+    store.review_claim(saved, "r:0", "confirm")
+    assert counts(store.stats(saved)) == {"accepted": 1, "edited": 0, "flagged": 0, "inferred": 3}
+
+
+def test_stats_repeated_edits_count_once(store, saved):
+    for text in ("x", "y", "z"):
+        store.review_claim(saved, "r:0", "edit", text)
+    assert counts(store.stats(saved)) == {"accepted": 0, "edited": 1, "flagged": 0, "inferred": 3}
+
+
+def test_stats_edit_flag_confirm_sequence_is_consistent(store, saved):
+    store.review_claim(saved, "r:0", "edit", "x")
+    store.review_claim(saved, "r:0", "flag")
+    assert counts(store.stats(saved)) == {"accepted": 0, "edited": 0, "flagged": 1, "inferred": 3}
+    store.review_claim(saved, "r:0", "confirm")
+    assert counts(store.stats(saved)) == {"accepted": 0, "edited": 1, "flagged": 0, "inferred": 3}
+
+
+def test_stats_keep_review_history(store, saved):
+    store.review_claim(saved, "r:0", "edit", "x")
+    store.review_claim(saved, "r:0", "flag")
+    store.stats(saved)
+    with store._conn() as conn:
+        actions = [r["action"] for r in conn.execute("SELECT action FROM events WHERE map_id = ? ORDER BY id",
+                                                     (saved,))]
+    assert actions == ["edit", "flag"]
