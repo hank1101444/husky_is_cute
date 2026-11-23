@@ -42,7 +42,7 @@ pytest -m live                        # prompt test suite, calls the real Claude
 3. Do not add or change decisions in `DECISIONS.md` on your own. Draft an entry and let a human
    decide; record who led it.
 4. If your output (code, docs, prompts) stays in the repo, add an entry to `docs/prompt_log.md` and
-   fill in the PR template's **AI involvement** line.
+   fill in the PR template's **AI assistance** section.
 5. Write the failing test first; run `pytest` and read the result before saying something works.
 6. The product prompt lives only in `src/onboarding_map/prompts.py`. Any change to it must be run
    against the prompt suite (`pytest -m live`) and recorded in `docs/prompt_card.md`.

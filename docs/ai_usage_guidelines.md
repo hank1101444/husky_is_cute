@@ -33,7 +33,7 @@ are in `CLAUDE.md`.
   analysis or other content that ends up in the repository — tool/model, prompt or task, output,
   what was kept / changed / rejected. One-off syntax, debugging or Git lookups need no entry unless
   their output ends up in the repo.
-- **Pull request descriptions:** every PR fills in the **AI involvement** line of the template
+- **Pull request descriptions:** every PR fills in the **AI assistance** section of the template
   (e.g. "Claude Code drafted the initial implementation; see prompt log 2026-11-23"). It is a
   pointer for reviewers, not a copy of the conversation.
 - **`DECISIONS.md`:** only when an AI suggestion meaningfully changes an important decision
