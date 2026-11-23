@@ -32,6 +32,11 @@
 **What:** TiffanyChen-tc is the code steward from today, taking over from Hank. Her first action as steward is reviewing the MVP pull requests (this PR, then the MVP code and the UI guide).
 **Why:** Hank wrote the MVP pull requests and cannot approve his own work. CP2 also requires every member to serve as steward at least once and to approve two PRs as steward with a real comment, so we rotate now instead of at the end.
 **Alternative rejected:** Hank staying steward until merge day. That would leave him reviewing nothing of his own and the others with no steward record.
+
+## 2026-11-23 — In-page role guide and progress steps (pilot finding)
+**What:** The page shows a short guide for each role (what the buttons and 🟡/✅/⛔ mean, what 「無紀錄的理由」 means, where questions go), the three review buttons are grouped together, and map generation shows step-by-step progress.
+**Why:** In our first internal pilot (Hank, 2026-11-23) the page was not self-explanatory ("我怎麼看？", "不同成員能幹嘛？") and the spinner gave no sense of progress. Details in `docs/design_rationale.md` §2. This is a team-member pilot, not one of the CP2 user-testing sessions.
+**Alternative rejected:** A separate help page (one more click; first-time users would not find it).
 **Led by:** Hank
 
 ## 2026-11-23 — Code steward handoff: Tiffany → ChingChingKao

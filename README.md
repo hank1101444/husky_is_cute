@@ -91,6 +91,8 @@ Each module has one job, which makes it a good unit for an improvement PR:
   tools are in [`CLAUDE.md`](CLAUDE.md).
 - What the product's AI does, its prompt, test suite and known failure modes:
   [`docs/prompt_card.md`](docs/prompt_card.md).
+- Interaction design decisions, pilot findings and user-testing notes:
+  [`docs/design_rationale.md`](docs/design_rationale.md).
 
 ## Known limitations (MVP)
 

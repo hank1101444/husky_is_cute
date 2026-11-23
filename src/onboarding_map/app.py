@@ -20,6 +20,19 @@ ROLE_BOB = "既有成員 (Bob)"
 ROLE_ALICE = "新成員 (Alice)"
 STATUS_LABEL = {"inferred": "推論", "verified": "已確認", "flagged": "已標記錯誤"}
 STATUS_ICON = {"inferred": "🟡", "verified": "✅", "flagged": "⛔"}
+ROLE_GUIDE = {
+    ROLE_BOB: (
+        "**你是既有成員**：AI 先畫好了這份地圖，請逐條檢查。點「來源」看 AI 的根據 → 對的按 **確認**、"
+        "不準確的按 **修改** 改寫、錯的按 **標記錯誤**（新成員就看不到這條）。"
+        "「無紀錄的理由」表示 repo 裡沒有寫原因；如果你知道，按修改把原因寫進去。"
+        "新成員的提問會出現在「待回答的問題」。"
+    ),
+    ROLE_ALICE: (
+        "**你是新成員**：這是這個專案的導覽地圖，先照「從這裡開始」的順序讀。"
+        "🟡 推論＝AI 推測、還沒人確認；✅ 已確認＝既有成員檢查過。每條都可以點「來源」看原始資料。"
+        "看不懂的地方，在該模組底下的問答框提問，既有成員回答後會留在地圖上。"
+    ),
+}
 
 
 def source_links(m: LoadedMap, source_ids: list[str]) -> str:
@@ -42,7 +55,7 @@ def render_claim(store: Store, m: LoadedMap, claim: Claim, role: str) -> None:
     if role != ROLE_BOB:
         return
     edit_key = f"editing-{m.map_id}-{claim.id}"
-    cols = st.columns(3)
+    cols = st.columns([1, 1, 1, 6])
     if cols[0].button("確認", key=f"confirm-{claim.id}"):
         store.review_claim(m.map_id, claim.id, "confirm")
         st.rerun()
@@ -181,6 +194,7 @@ def main() -> None:
         st.sidebar.markdown("尚無地圖")
 
     st.title("新成員 Onboarding Map")
+    st.info(ROLE_GUIDE[role])
     if role == ROLE_BOB:
         render_generator(store, settings)
     if map_id is None:

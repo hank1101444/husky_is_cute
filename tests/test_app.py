@@ -124,3 +124,17 @@ def test_alice_question_shows_and_box_clears(seeded_flagged):
     assert at.text_area(key="ask-b").value == ""
     at.button(key="ask-btn-b").click().run()
     assert len(seeded_flagged.store.questions(seeded_flagged.map_id, "b")) == 1
+
+
+def test_bob_sees_role_guide(app_env):
+    at = run_app()
+    guide = " ".join(i.value for i in at.info)
+    assert "你是既有成員" in guide and "標記錯誤" in guide and "無紀錄的理由" in guide
+
+
+def test_alice_sees_role_guide(app_env):
+    at = run_app()
+    at.sidebar.radio[0].set_value("新成員 (Alice)").run()
+    guide = " ".join(i.value for i in at.info)
+    assert "你是新成員" in guide and "從這裡開始" in guide and "提問" in guide
+    assert "你是既有成員" not in guide
