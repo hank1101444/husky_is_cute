@@ -1,3 +1,5 @@
+import pytest
+
 from onboarding_map.mapper import validate
 from onboarding_map.models import NO_REASON, ValidationResult
 from onboarding_map.prompts import SYSTEM_PROMPT, build_user_prompt
@@ -96,3 +98,38 @@ def test_reading_target_must_exist(snap, good_draft):
 def test_reading_target_may_be_source_id(snap, good_draft):
     good_draft.reading_order[0].target = "PR#1"
     assert claim(validate(good_draft, snap), "r:0").valid
+
+
+NO_REASON_VARIANTS = ["無紀錄的理由。", "「無紀錄的理由」", "  無紀錄的理由  ", "無紀錄的理由."]
+GUESSED_REASONS = ["這裡無紀錄的理由是效能", "無紀錄的理由，但可能是為了效能"]
+
+
+def _set_reason(draft, kind, reason, source_ids):
+    """Set the reason of the relation (m:a:rel:b) or reading (r:0) claim; return its claim id."""
+    item = draft.modules[0].relations[0] if kind == "relation" else draft.reading_order[0]
+    item.reason, item.source_ids = reason, source_ids
+    return "m:a:rel:b" if kind == "relation" else "r:0"
+
+
+@pytest.mark.parametrize("kind", ["relation", "reading"])
+@pytest.mark.parametrize("reason", NO_REASON_VARIANTS)
+def test_no_reason_variant_with_empty_sources_is_valid(snap, good_draft, kind, reason):
+    claim_id = _set_reason(good_draft, kind, reason, [])
+    c = claim(validate(good_draft, snap), claim_id)
+    assert c.valid, c.problems
+
+
+@pytest.mark.parametrize("kind", ["relation", "reading"])
+@pytest.mark.parametrize("reason", NO_REASON_VARIANTS)
+def test_no_reason_variant_with_sources_is_invalid(snap, good_draft, kind, reason):
+    claim_id = _set_reason(good_draft, kind, reason, ["PR#1"])
+    c = claim(validate(good_draft, snap), claim_id)
+    assert c.problems == ["標示「無紀錄的理由」時不應附上來源"]
+
+
+@pytest.mark.parametrize("kind", ["relation", "reading"])
+@pytest.mark.parametrize("reason", GUESSED_REASONS)
+def test_guessed_reason_is_not_treated_as_no_reason(snap, good_draft, kind, reason):
+    claim_id = _set_reason(good_draft, kind, reason, [])
+    c = claim(validate(good_draft, snap), claim_id)
+    assert c.problems == ["理由沒有附上來源"]

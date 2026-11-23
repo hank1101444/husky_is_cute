@@ -76,8 +76,13 @@ def _check_sources(source_ids: list[str], known: set[str]) -> list[str]:
     return [f"來源 {sid} 不存在於 repo 資料中" for sid in source_ids if sid not in known]
 
 
+def _is_no_reason(reason: str) -> bool:
+    """True if the reason is exactly NO_REASON, ignoring whitespace, 「」 and 。.!！ at either end."""
+    return reason.strip().strip("「」。.!！").strip() == NO_REASON
+
+
 def _check_reason(reason: str, source_ids: list[str], known: set[str]) -> list[str]:
-    if reason.strip() == NO_REASON:
+    if _is_no_reason(reason):
         return ["標示「無紀錄的理由」時不應附上來源"] if source_ids else []
     if not source_ids:
         return ["理由沒有附上來源"]
