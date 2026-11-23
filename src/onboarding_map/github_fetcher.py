@@ -127,6 +127,15 @@ def fetch_snapshot(url: str, token: str | None = None, limits: FetchLimits = Fet
             sources.append(SourceItem(id=f"PR#{n}/comment:{c['id']}", type="pr_comment",
                                       title=f"PR #{n} comment by {login}",
                                       url=c.get("html_url") or f"{repo_url}/pull/{n}", text=c.get("body") or ""))
+        report(f"讀取 PR review {i}/{len(pulls)}")
+        reviews = gh.get(f"/pulls/{n}/reviews", missing_ok=(404,))
+        for r in reviews.json() if reviews is not None else []:
+            if not r.get("body"):
+                continue
+            login = (r.get("user") or {}).get("login", "?")
+            sources.append(SourceItem(id=f"PR#{n}/review:{r['id']}", type="pr_review",
+                                      title=f"PR #{n} review by {login} ({r.get('state') or '?'})",
+                                      url=r.get("html_url") or f"{repo_url}/pull/{n}", text=r["body"]))
 
     report("讀取 issue")
     issues = gh.get("/issues", params={"state": "all", "per_page": limits.issues}).json()

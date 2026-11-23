@@ -9,14 +9,14 @@ from pydantic import BaseModel, Field
 NO_REASON = "無紀錄的理由"
 """Exact text the AI must use when no source explains a reason."""
 
-SourceType = Literal["readme", "file", "pr", "pr_comment", "issue", "commit", "decision"]
+SourceType = Literal["readme", "file", "pr", "pr_comment", "pr_review", "issue", "commit", "decision"]
 
 
 class SourceItem(BaseModel):
     """One piece of repository evidence the AI may cite.
 
     ID scheme: ``README``, ``file:<path>``, ``PR#<n>``, ``PR#<n>/comment:<id>``,
-    ``ISSUE#<n>``, ``commit:<sha7>``, ``DECISION:<heading>``.
+    ``PR#<n>/review:<id>``, ``ISSUE#<n>``, ``commit:<sha7>``, ``DECISION:<heading>``.
     """
 
     id: str
