@@ -1,0 +1,13 @@
+/tmp
+
+# Secrets: never commit
+.env
+
+# Local data and build artefacts
+data/
+__pycache__/
+.pytest_cache/
+*.egg-info/
+
+# AI workflow scratch docs (design spec / plan) stay local
+docs/superpowers/

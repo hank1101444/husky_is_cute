@@ -1,0 +1,7 @@
+anthropic==2.12.0
+pydantic==2.14.4
+requests==2.34.2
+python-dotenv==1.2.4
+streamlit==1.67.0
+pytest==9.2.0
+responses==0.26.3
