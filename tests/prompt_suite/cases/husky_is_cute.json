@@ -1,0 +1,167 @@
+{
+  "name": "husky_is_cute",
+  "description": "Our own (tiny) repository, fetched from GitHub.",
+  "snapshot": {
+    "owner": "hank1101444",
+    "repo": "husky_is_cute",
+    "url": "https://github.com/hank1101444/husky_is_cute",
+    "default_branch": "main",
+    "tree": [
+      ".github/PULL_REQUEST_TEMPLATE.md",
+      "CONTRIBUTORS.md",
+      "DECISIONS.md",
+      "README.md",
+      "husky-practice.txt"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/hank1101444/husky_is_cute#readme",
+        "text": "# husky_is_cute\n"
+      },
+      {
+        "id": "DECISION:2026-09-21 — Initial code steward",
+        "type": "decision",
+        "title": "2026-09-21 — Initial code steward",
+        "url": "https://github.com/hank1101444/husky_is_cute/blob/main/DECISIONS.md",
+        "text": "**What:** Hank is the initial code steward for the team.\n**Why:** Hank volunteered and has the most Git experience so far. (X"
+      },
+      {
+        "id": "PR#4",
+        "type": "pr",
+        "title": "Update PR template and decisions",
+        "url": "https://github.com/hank1101444/husky_is_cute/pull/4",
+        "text": "## What this PR does\n\nUpdated the pull request template and DECISIONS.md to improve team collaboration, decision tracking, and documentation of AI involvement.\n\n## Decision (required if a significant choice was made)\n\n**Decision:** Use a standardized PR template and maintain DECISIONS.md to document important team decisions.\n\n**Why:** To improve transparency, maintain consistency across pull requests, and help team members understand previous decisions.\n\n**Alternative rejected:** None.\n\n**Led by:** Hank\n\n**AI involvement:** ChatGPT was used to review the documentation format and provide suggestions. The final changes were reviewed by Hank."
+      },
+      {
+        "id": "PR#4/comment:6381066924",
+        "type": "pr_comment",
+        "title": "PR #4 comment by ChingChingKao",
+        "url": "https://github.com/hank1101444/husky_is_cute/pull/4#issuecomment-6381066924",
+        "text": "ＯＫ"
+      },
+      {
+        "id": "PR#3",
+        "type": "pr",
+        "title": "shen test",
+        "url": "https://github.com/hank1101444/husky_is_cute/pull/3",
+        "text": "## What this PR does\r\nadd Shen to CONTRIBUTORS.md\r\n"
+      },
+      {
+        "id": "PR#2",
+        "type": "pr",
+        "title": "Add contributors file",
+        "url": "https://github.com/hank1101444/husky_is_cute/pull/2",
+        "text": "This pull request adds a new `CONTRIBUTORS.md` file to the project to acknowledge contributors.\r\n\r\nDocumentation:\r\n\r\n* Added a `CONTRIBUTORS.md` file listing project contributors.\r\n\r\n"
+      },
+      {
+        "id": "PR#2/comment:5765660663",
+        "type": "pr_comment",
+        "title": "PR #2 comment by ShenChiaoXiuan",
+        "url": "https://github.com/hank1101444/husky_is_cute/pull/2#issuecomment-5765660663",
+        "text": "heyyyyyyy nihao~!!!!"
+      },
+      {
+        "id": "PR#1",
+        "type": "pr",
+        "title": "Add my practice PR file",
+        "url": "https://github.com/hank1101444/husky_is_cute/pull/1",
+        "text": "## What this PR does\r\n[One sentence]\r\n\r\n## Decision (required if a significant choice was made)\r\nDecision: [what was chosen]\r\nWhy: [what problem this solves or what alternative it beat]\r\nAlternative rejected: [optional]\r\nLed by: [name]\r\n"
+      },
+      {
+        "id": "PR#1/comment:5755214322",
+        "type": "pr_comment",
+        "title": "PR #1 comment by hank1101444",
+        "url": "https://github.com/hank1101444/husky_is_cute/pull/1#issuecomment-5755214322",
+        "text": "LGTM!"
+      },
+      {
+        "id": "commit:90cdca9",
+        "type": "commit",
+        "title": "Merge pull request #4 from hank1101444/hank-practice",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/90cdca9e225ccb161aab08475b40a48008ba56e2",
+        "text": "Merge pull request #4 from hank1101444/hank-practice\n\nUpdate PR template and decisions"
+      },
+      {
+        "id": "commit:8763cb0",
+        "type": "commit",
+        "title": "Update PR template and decisions",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/8763cb0fa23052473d56abba476a2557d91558d5",
+        "text": "Update PR template and decisions"
+      },
+      {
+        "id": "commit:d620cf6",
+        "type": "commit",
+        "title": "Merge pull request #3 from hank1101444/shen-test",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/d620cf6bf37fc16ea7d32aa7faf490c45bf6a24b",
+        "text": "Merge pull request #3 from hank1101444/shen-test\n\nshen test"
+      },
+      {
+        "id": "commit:21becd6",
+        "type": "commit",
+        "title": "shen test",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/21becd6fc97c8c03a2846b128e044c155240fc17",
+        "text": "shen test"
+      },
+      {
+        "id": "commit:9474b24",
+        "type": "commit",
+        "title": "Merge pull request #2 from hank1101444/hank-practice",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/9474b2418906987ed642334c3e0b8ec97d6e2d6b",
+        "text": "Merge pull request #2 from hank1101444/hank-practice\n\nAdd contributors file"
+      },
+      {
+        "id": "commit:4e39366",
+        "type": "commit",
+        "title": "Merge pull request #1 from hank1101444/husky-test",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/4e393667598902613bd77f6d2a94260b21303075",
+        "text": "Merge pull request #1 from hank1101444/husky-test\n\nAdd my practice PR file"
+      },
+      {
+        "id": "commit:ff1ccb2",
+        "type": "commit",
+        "title": "Add my practice PR file",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/ff1ccb21fb42dd5b8bec5b8c34938bb90ffa78d2",
+        "text": "Add my practice PR file"
+      },
+      {
+        "id": "commit:f5f5506",
+        "type": "commit",
+        "title": "Add contributors file",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/f5f55061a68d56f7db933c75fef502e96cd1b778",
+        "text": "Add contributors file"
+      },
+      {
+        "id": "commit:5ec00dc",
+        "type": "commit",
+        "title": "Add initial decisions log",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/5ec00dc9510da114eddabb4cce93de0f50827018",
+        "text": "Add initial decisions log"
+      },
+      {
+        "id": "commit:8992098",
+        "type": "commit",
+        "title": "Create PR template for contribution guidelines",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/89920981023883828e536e2dcc0c3a1126e3122b",
+        "text": "Create PR template for contribution guidelines\n\nAdd a pull request template for contributors."
+      },
+      {
+        "id": "commit:17fa51a",
+        "type": "commit",
+        "title": "Create README.md",
+        "url": "https://github.com/hank1101444/husky_is_cute/commit/17fa51a9a96bf5ce1e4214c608d70eef68cad53f",
+        "text": "Create README.md"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 1,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

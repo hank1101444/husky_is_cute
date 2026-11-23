@@ -1,0 +1,49 @@
+{
+  "name": "no_prs",
+  "description": "Repository with README and commits but no PRs or issues.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "notes-app",
+    "url": "https://github.com/example/notes-app",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "notes/app.py",
+      "notes/storage.py",
+      "notes/search.py",
+      "notes/ui.py",
+      "tests/test_search.py"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/notes-app#readme",
+        "text": "# Notes\nDesktop note-taking app. Notes are stored as JSON files; search is full-text."
+      },
+      {
+        "id": "commit:f4f4f4f",
+        "type": "commit",
+        "title": "Store notes as JSON files",
+        "url": "https://github.com/example/notes-app/commit/f4f4f4f",
+        "text": "Store notes as JSON files instead of SQLite to keep backups simple"
+      },
+      {
+        "id": "commit:a5a5a5a",
+        "type": "commit",
+        "title": "Add full-text search",
+        "url": "https://github.com/example/notes-app/commit/a5a5a5a",
+        "text": "Add full-text search"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

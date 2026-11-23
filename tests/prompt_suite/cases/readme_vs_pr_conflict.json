@@ -1,0 +1,53 @@
+{
+  "name": "readme_vs_pr_conflict",
+  "description": "README says MySQL but a later PR switched to PostgreSQL; the PR is the real reason.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "library-system",
+    "url": "https://github.com/example/library-system",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "app/db.py",
+      "app/books.py",
+      "app/loans.py",
+      "app/api.py",
+      "migrations/001_init.sql",
+      "migrations/002_jsonb_metadata.sql",
+      "tests/test_loans.py"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/library-system#readme",
+        "text": "# Library System\nBackend uses MySQL. Run `docker compose up`."
+      },
+      {
+        "id": "PR#12",
+        "type": "pr",
+        "title": "Switch database from MySQL to PostgreSQL",
+        "url": "https://github.com/example/library-system/pull/12",
+        "text": "We need JSONB columns for flexible book metadata (migrations/002_jsonb_metadata.sql), so app/db.py now uses PostgreSQL. README not updated yet."
+      },
+      {
+        "id": "commit:7b7b7b7",
+        "type": "commit",
+        "title": "Add loans API",
+        "url": "https://github.com/example/library-system/commit/7b7b7b7",
+        "text": "Add loans API"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [
+      "PR#12"
+    ],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

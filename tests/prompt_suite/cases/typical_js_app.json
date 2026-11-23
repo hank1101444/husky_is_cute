@@ -1,0 +1,68 @@
+{
+  "name": "typical_js_app",
+  "description": "Typical React + Express app.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "todo-fullstack",
+    "url": "https://github.com/example/todo-fullstack",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "package.json",
+      "client/src/App.jsx",
+      "client/src/api/client.js",
+      "client/src/components/TodoList.jsx",
+      "client/src/components/TodoItem.jsx",
+      "server/index.js",
+      "server/routes/todos.js",
+      "server/db.js",
+      "server/middleware/auth.js",
+      "server/tests/todos.test.js"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/todo-fullstack#readme",
+        "text": "# Todo Fullstack\nReact frontend in `client/`, Express API in `server/`.\n`npm run dev` starts both."
+      },
+      {
+        "id": "PR#8",
+        "type": "pr",
+        "title": "Add API client wrapper",
+        "url": "https://github.com/example/todo-fullstack/pull/8",
+        "text": "All components used fetch directly. client/src/api/client.js centralises fetch so the auth header is added in one place."
+      },
+      {
+        "id": "PR#9",
+        "type": "pr",
+        "title": "Add auth middleware",
+        "url": "https://github.com/example/todo-fullstack/pull/9",
+        "text": "Adds server/middleware/auth.js to check the token on every /todos route."
+      },
+      {
+        "id": "ISSUE#4",
+        "type": "issue",
+        "title": "Login token not sent on delete",
+        "url": "https://github.com/example/todo-fullstack/issues/4",
+        "text": "Deleting a todo returns 401."
+      },
+      {
+        "id": "commit:aaa1111",
+        "type": "commit",
+        "title": "scaffold",
+        "url": "https://github.com/example/todo-fullstack/commit/aaa1111",
+        "text": "scaffold client and server"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 3,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

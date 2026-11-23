@@ -1,0 +1,50 @@
+{
+  "name": "chinese_readme",
+  "description": "README written in Chinese.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "course-scheduler",
+    "url": "https://github.com/example/course-scheduler",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "scheduler/solver.py",
+      "scheduler/constraints.py",
+      "scheduler/loader.py",
+      "web/app.py",
+      "web/templates/index.html",
+      "tests/test_solver.py"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/course-scheduler#readme",
+        "text": "# 排課系統\n輸入課程與教室資料，自動排出不衝堂的課表。\n\n- `scheduler/`：排課演算法\n- `web/`：網頁介面"
+      },
+      {
+        "id": "PR#6",
+        "type": "pr",
+        "title": "改用 constraint solver",
+        "url": "https://github.com/example/course-scheduler/pull/6",
+        "text": "原本的貪婪法常常排不出來，改用 constraints.py + solver.py。"
+      },
+      {
+        "id": "commit:9a9a9a9",
+        "type": "commit",
+        "title": "init",
+        "url": "https://github.com/example/course-scheduler/commit/9a9a9a9",
+        "text": "init"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

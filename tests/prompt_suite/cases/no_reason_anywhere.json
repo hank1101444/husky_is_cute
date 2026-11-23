@@ -1,0 +1,48 @@
+{
+  "name": "no_reason_anywhere",
+  "description": "Unexplained code with no reasons anywhere; must say no recorded reason.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "mystery-tool",
+    "url": "https://github.com/example/mystery-tool",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "core/engine.py",
+      "core/magic.py",
+      "core/cache.py",
+      "cli.py"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/mystery-tool#readme",
+        "text": "# Mystery Tool\nA tool."
+      },
+      {
+        "id": "commit:1111111",
+        "type": "commit",
+        "title": "update",
+        "url": "https://github.com/example/mystery-tool/commit/1111111",
+        "text": "update"
+      },
+      {
+        "id": "commit:2222222",
+        "type": "commit",
+        "title": "wip",
+        "url": "https://github.com/example/mystery-tool/commit/2222222",
+        "text": "wip"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 1,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": true,
+    "must_not_contain": []
+  }
+}

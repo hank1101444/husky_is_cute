@@ -1,0 +1,60 @@
+{
+  "name": "reason_only_in_pr_comment",
+  "description": "Deliberate 50 ms sleep; the reason is only in a PR comment.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "checkout-service",
+    "url": "https://github.com/example/checkout-service",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "cmd/server/main.go",
+      "internal/checkout/handler.go",
+      "internal/checkout/commit.go",
+      "internal/inventory/lock.go",
+      "internal/webhook/payment.go",
+      "internal/middleware/auth.go",
+      "docker-compose.yml"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/checkout-service#readme",
+        "text": "# Checkout Service\nGo service for checkout and inventory locking."
+      },
+      {
+        "id": "PR#42",
+        "type": "pr",
+        "title": "Add small delay before transaction commit",
+        "url": "https://github.com/example/checkout-service/pull/42",
+        "text": "Small fix in internal/checkout/commit.go."
+      },
+      {
+        "id": "PR#42/comment:9001",
+        "type": "pr_comment",
+        "title": "PR #42 comment by mentor",
+        "url": "https://github.com/example/checkout-service/pull/42#issuecomment-9001",
+        "text": "The 50ms sleep before commit is needed because the third-party payment webhook writes asynchronously; without it we read dirty data."
+      },
+      {
+        "id": "commit:c0ffee1",
+        "type": "commit",
+        "title": "Release inventory locks after rollback",
+        "url": "https://github.com/example/checkout-service/commit/c0ffee1",
+        "text": "Release inventory locks after rollback"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [
+      "PR#42/comment:9001"
+    ],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}
