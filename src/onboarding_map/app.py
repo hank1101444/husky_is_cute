@@ -236,6 +236,15 @@ def render_generator(store: Store, settings) -> None:
         _load_demo(store)
     if not cols[0].button("產生地圖", key="generate"):
         return
+    # Check the URL first: a missing API key should not hide a URL the user can fix right away.
+    if not url.strip():
+        st.error("請先輸入 GitHub repo 網址")
+        return
+    try:
+        github_fetcher.parse_repo_url(url)
+    except github_fetcher.InvalidRepoUrl as exc:
+        st.error(str(exc))
+        return
     if not os.getenv("ANTHROPIC_API_KEY"):
         st.error("尚未設定 ANTHROPIC_API_KEY，請在 .env 填入金鑰後重新啟動，或按「載入示範地圖」先試用")
         return
