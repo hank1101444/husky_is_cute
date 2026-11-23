@@ -60,6 +60,10 @@ links jump within the same page to 「從這裡開始」, 「模組」 and each 
 scrolled to but not opened). Click 「頁面索引」 to fold the whole panel, or 「模組清單」 (the badge is
 the number of modules) to fold only the module links.
 
+**No API key?** As the existing member, press **載入示範地圖（不需 API key）** to load a predefined
+sample map of this repository. It makes no Claude or GitHub calls, and both roles see a banner saying it
+is sample data, not a live Claude result. Reviewing, asking and answering work as usual.
+
 ## Test
 
 ```bash

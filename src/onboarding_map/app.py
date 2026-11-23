@@ -14,7 +14,7 @@ from urllib.parse import quote
 
 import streamlit as st
 
-from onboarding_map import github_fetcher, mapper
+from onboarding_map import demo, github_fetcher, mapper
 from onboarding_map.config import load_settings
 from onboarding_map.models import Claim, DraftModule
 from onboarding_map.store import LoadedMap, Store
@@ -231,10 +231,13 @@ def _submit_question(store: Store, map_id: int, module_id: str, box: str) -> Non
 def render_generator(store: Store, settings) -> None:
     st.subheader("產生新地圖")
     url = st.text_input("GitHub repo 網址", key="repo_url", placeholder="https://github.com/owner/repo")
-    if not st.button("產生地圖", key="generate"):
+    cols = st.columns([1, 2, 5])
+    if cols[1].button("載入示範地圖（不需 API key）", key="load-demo"):
+        _load_demo(store)
+    if not cols[0].button("產生地圖", key="generate"):
         return
     if not os.getenv("ANTHROPIC_API_KEY"):
-        st.error("尚未設定 ANTHROPIC_API_KEY，請在 .env 填入金鑰後重新啟動")
+        st.error("尚未設定 ANTHROPIC_API_KEY，請在 .env 填入金鑰後重新啟動，或按「載入示範地圖」先試用")
         return
     status = st.status("步驟 1/3：讀取 GitHub 資料…", expanded=True)
     try:
@@ -254,6 +257,13 @@ def render_generator(store: Store, settings) -> None:
         return
     # The sidebar selectbox (key "map_id") already exists in this run; hand the id over via another key.
     st.session_state["select_map_id"] = map_id
+    st.rerun()
+
+
+def _load_demo(store: Store) -> None:
+    """Save the predefined sample map and select it. No Claude or GitHub call; validation runs locally."""
+    snapshot, draft = demo.demo_snapshot(), demo.demo_draft()
+    st.session_state["select_map_id"] = store.save_map(snapshot, draft, mapper.validate(draft, snapshot))
     st.rerun()
 
 
@@ -311,6 +321,8 @@ def main() -> None:
         return
 
     st.markdown(f"### {m.repo_url}")
+    if m.snapshot.demo:
+        st.warning("這是示範資料：地圖內容是預先寫好的範例，不是 Claude 即時產生的。你的確認、修改和問答仍會照常儲存。")
     for kind, note in m.snapshot.truncation.items():
         st.info(f"資料不完整（{kind}）：{note}")
     st.caption("每條說法都由 AI 推論並附上來源；🟡 推論、✅ 已確認、⛔ 已標記錯誤。")

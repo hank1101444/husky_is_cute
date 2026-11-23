@@ -34,6 +34,8 @@ class RepoSnapshot(BaseModel):
     tree: list[str] = Field(default_factory=list)
     sources: list[SourceItem] = Field(default_factory=list)
     truncation: dict[str, str] = Field(default_factory=dict)
+    demo: bool = False
+    """True for the predefined offline sample (``demo.py``), not data read from GitHub."""
 
     def source_ids(self) -> set[str]:
         return {f"file:{p}" for p in self.tree} | {s.id for s in self.sources}
