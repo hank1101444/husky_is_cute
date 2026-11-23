@@ -54,12 +54,22 @@ def draft_map(snapshot: RepoSnapshot, client: anthropic.Anthropic | None = None,
 
 
 def _dedupe_module_ids(draft: OnboardingMapDraft) -> OnboardingMapDraft:
-    """Structured outputs cannot enforce unique ids; rename repeats to <id>-2, <id>-3, ..."""
-    seen: dict[str, int] = {}
+    """Structured outputs cannot enforce unique ids; rename repeats to <id>-2, <id>-3, ...
+
+    Every original id is reserved first, so a generated suffix never takes an id the model already
+    used (e.g. a later "a-2"). The first occurrence of each id keeps it; relation targets are unchanged.
+    """
+    used = {m.id for m in draft.modules}
+    kept: set[str] = set()
     for m in draft.modules:
-        seen[m.id] = seen.get(m.id, 0) + 1
-        if seen[m.id] > 1:
-            m.id = f"{m.id}-{seen[m.id]}"
+        if m.id not in kept:
+            kept.add(m.id)
+            continue
+        n = 2
+        while f"{m.id}-{n}" in used:
+            n += 1
+        m.id = f"{m.id}-{n}"
+        used.add(m.id)
     return draft
 
 
