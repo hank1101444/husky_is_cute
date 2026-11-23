@@ -1,0 +1,49 @@
+{
+  "name": "no_readme",
+  "description": "CLI tool without a README; only code and commits.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "csv-cleaner",
+    "url": "https://github.com/example/csv-cleaner",
+    "default_branch": "main",
+    "tree": [
+      "cleaner/__init__.py",
+      "cleaner/cli.py",
+      "cleaner/rules.py",
+      "cleaner/io.py",
+      "tests/test_rules.py",
+      "setup.py"
+    ],
+    "sources": [
+      {
+        "id": "commit:b0b0b0b",
+        "type": "commit",
+        "title": "Add CLI entry point",
+        "url": "https://github.com/example/csv-cleaner/commit/b0b0b0b",
+        "text": "Add CLI entry point in cleaner/cli.py"
+      },
+      {
+        "id": "commit:c1c1c1c",
+        "type": "commit",
+        "title": "Add trimming and dedupe rules",
+        "url": "https://github.com/example/csv-cleaner/commit/c1c1c1c",
+        "text": "Add trimming and dedupe rules"
+      },
+      {
+        "id": "commit:d2d2d2d",
+        "type": "commit",
+        "title": "Read and write CSV with utf-8-sig",
+        "url": "https://github.com/example/csv-cleaner/commit/d2d2d2d",
+        "text": "Read and write CSV with utf-8-sig so Excel files open correctly"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

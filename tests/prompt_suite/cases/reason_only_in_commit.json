@@ -1,0 +1,54 @@
+{
+  "name": "reason_only_in_commit",
+  "description": "Strange 0.3 loss scaling; the only reason is a commit message.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "multimodal-detector",
+    "url": "https://github.com/example/multimodal-detector",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "train.py",
+      "eval.py",
+      "models/backbone.py",
+      "models/attention.py",
+      "models/loss.py",
+      "data/pairing.py",
+      "data/loader.py",
+      "scripts/train.sh"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/multimodal-detector#readme",
+        "text": "# Multimodal Detector\nRun `bash scripts/train.sh`."
+      },
+      {
+        "id": "commit:a1b2c3d",
+        "type": "commit",
+        "title": "Scale aux loss dim by 0.3 and clip",
+        "url": "https://github.com/example/multimodal-detector/commit/a1b2c3d",
+        "text": "Scale aux loss dim by 0.3 and clip in models/loss.py\n\nTemporary fix: gradients exploded around epoch 20. Remove once the attention init is fixed."
+      },
+      {
+        "id": "commit:e5f6a7b",
+        "type": "commit",
+        "title": "Pair radar frames with images",
+        "url": "https://github.com/example/multimodal-detector/commit/e5f6a7b",
+        "text": "Pair radar frames with images by timestamp in data/pairing.py"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [
+      "commit:a1b2c3d"
+    ],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

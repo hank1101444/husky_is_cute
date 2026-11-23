@@ -1,0 +1,50 @@
+{
+  "name": "empty_decisions",
+  "description": "DECISIONS.md exists but has no entries.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "weather-bot",
+    "url": "https://github.com/example/weather-bot",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "DECISIONS.md",
+      "bot/main.py",
+      "bot/weather_api.py",
+      "bot/formatter.py",
+      "bot/config.py",
+      "tests/test_formatter.py"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/weather-bot#readme",
+        "text": "# Weather Bot\nA LINE bot that replies with today's weather."
+      },
+      {
+        "id": "PR#2",
+        "type": "pr",
+        "title": "Format replies as cards",
+        "url": "https://github.com/example/weather-bot/pull/2",
+        "text": "Use formatter.py to build card messages."
+      },
+      {
+        "id": "commit:e3e3e3e",
+        "type": "commit",
+        "title": "Add weather API client",
+        "url": "https://github.com/example/weather-bot/commit/e3e3e3e",
+        "text": "Add weather API client"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

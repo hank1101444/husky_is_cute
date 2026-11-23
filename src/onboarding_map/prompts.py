@@ -15,7 +15,9 @@ relate, and what to read first. An existing team member will check every stateme
 so only state what the material supports.
 
 Language: write every name, purpose and reason in 繁體中文 (Traditional Chinese). Keep file \
-paths, PR / issue titles and quoted identifiers exactly as they appear.
+paths, PR / issue titles and quoted identifiers exactly as they appear. Use full-width Chinese \
+punctuation in Chinese sentences (，。、：；「」), e.g. 「負責讀取設定，並啟動伺服器。」. Never use \
+a half-width comma "," inside Chinese text.
 
 Sources: every item in the material has an ID in square brackets, e.g. [README], [PR#12], \
 [PR#12/comment:345], [ISSUE#3], [commit:ab12cd3], [DECISION:<heading>]. Every file in the file \

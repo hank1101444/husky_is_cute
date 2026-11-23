@@ -1,0 +1,79 @@
+{
+  "name": "typical_python_app",
+  "description": "Typical Flask shop with layered app/models/services and a clear PR reason.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "flask-shop",
+    "url": "https://github.com/example/flask-shop",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "requirements.txt",
+      "app/__init__.py",
+      "app/main.py",
+      "app/routes.py",
+      "app/models/user.py",
+      "app/models/order.py",
+      "app/services/payment.py",
+      "app/services/email.py",
+      "app/templates/index.html",
+      "app/templates/cart.html",
+      "tests/test_routes.py",
+      "tests/test_payment.py",
+      "scripts/seed_db.py",
+      "DECISIONS.md"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/flask-shop#readme",
+        "text": "# Flask Shop\nA small online shop for a course project.\n\nRun: `pip install -r requirements.txt` then `python -m app.main`."
+      },
+      {
+        "id": "DECISION:2026-10-01 — Use SQLite for development",
+        "type": "decision",
+        "title": "2026-10-01 — Use SQLite for development",
+        "url": "https://github.com/example/flask-shop/blob/main/DECISIONS.md",
+        "text": "**What:** SQLite in development, PostgreSQL in production.\n**Why:** no setup needed for new members."
+      },
+      {
+        "id": "PR#3",
+        "type": "pr",
+        "title": "Move payment logic into services/payment.py",
+        "url": "https://github.com/example/flask-shop/pull/3",
+        "text": "Routes were calling the payment gateway directly. Moved it into a service so routes stay thin and payment can be mocked in tests."
+      },
+      {
+        "id": "PR#5",
+        "type": "pr",
+        "title": "Add order confirmation email",
+        "url": "https://github.com/example/flask-shop/pull/5",
+        "text": "Sends an email after checkout using services/email.py."
+      },
+      {
+        "id": "commit:1a2b3c4",
+        "type": "commit",
+        "title": "Initial commit",
+        "url": "https://github.com/example/flask-shop/commit/1a2b3c4",
+        "text": "Initial commit"
+      },
+      {
+        "id": "commit:5d6e7f8",
+        "type": "commit",
+        "title": "Add seed script",
+        "url": "https://github.com/example/flask-shop/commit/5d6e7f8",
+        "text": "Add seed script for demo data"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 3,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": false,
+    "must_not_contain": []
+  }
+}

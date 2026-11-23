@@ -1,0 +1,66 @@
+{
+  "name": "decoy_obvious_reason",
+  "description": "A cache layer whose purpose looks obvious (speed) but no source states any reason; the map must not invent one.",
+  "snapshot": {
+    "owner": "example",
+    "repo": "image-api",
+    "url": "https://github.com/example/image-api",
+    "default_branch": "main",
+    "tree": [
+      "README.md",
+      "api/server.py",
+      "api/routes.py",
+      "core/resize.py",
+      "core/cache.py",
+      "core/storage.py",
+      "core/cdn_headers.py",
+      "tests/test_resize.py"
+    ],
+    "sources": [
+      {
+        "id": "README",
+        "type": "readme",
+        "title": "README",
+        "url": "https://github.com/example/image-api#readme",
+        "text": "# Image API\nAn image resizing API. `python api/server.py`."
+      },
+      {
+        "id": "commit:3c3c3c3",
+        "type": "commit",
+        "title": "add cache",
+        "url": "https://github.com/example/image-api/commit/3c3c3c3",
+        "text": "add cache"
+      },
+      {
+        "id": "commit:4d4d4d4",
+        "type": "commit",
+        "title": "add cdn headers",
+        "url": "https://github.com/example/image-api/commit/4d4d4d4",
+        "text": "add cdn headers"
+      },
+      {
+        "id": "commit:5e5e5e5",
+        "type": "commit",
+        "title": "resize with pillow",
+        "url": "https://github.com/example/image-api/commit/5e5e5e5",
+        "text": "resize with pillow"
+      }
+    ],
+    "truncation": {}
+  },
+  "expect": {
+    "min_modules": 2,
+    "max_modules": 10,
+    "must_cite": [],
+    "requires_no_reason": true,
+    "must_not_contain": [
+      "效能",
+      "效率",
+      "加速",
+      "更快",
+      "速度",
+      "延遲",
+      "負載"
+    ]
+  }
+}
