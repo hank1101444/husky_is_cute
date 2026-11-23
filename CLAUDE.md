@@ -32,6 +32,7 @@ pytest -m live                        # prompt test suite, calls the real Claude
 - `src/onboarding_map/prompts.py` — **the product's system prompt (single source of truth)**
 - `src/onboarding_map/mapper.py` — Claude call (structured output) + source validation
 - `src/onboarding_map/store.py` — SQLite: maps, claim reviews, questions, stats
+- `src/onboarding_map/demo.py` — predefined sample snapshot + map for the offline demo mode
 - `src/onboarding_map/app.py` — Streamlit UI (Bob = existing member, Alice = new member)
 - `tests/` — offline tests; `tests/prompt_suite/` — live prompt test cases
 

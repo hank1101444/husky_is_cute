@@ -55,6 +55,10 @@ Anyone who can reach that URL can use the app, so only run it on networks you tr
 
 Generating a map takes about 20 seconds for a small repository.
 
+**No API key?** As the existing member, press **載入示範地圖（不需 API key）** to load a predefined
+sample map of this repository. It makes no Claude or GitHub calls, and both roles see a banner saying it
+is sample data, not a live Claude result. Reviewing, asking and answering work as usual.
+
 ## Test
 
 ```bash
