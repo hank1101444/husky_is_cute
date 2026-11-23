@@ -38,3 +38,9 @@
 **Why:** In our first internal pilot (Hank, 2026-11-23) the page was not self-explanatory ("我怎麼看？", "不同成員能幹嘛？") and the spinner gave no sense of progress. Details in `docs/design_rationale.md` §2. This is a team-member pilot, not one of the CP2 user-testing sessions.
 **Alternative rejected:** A separate help page (one more click; first-time users would not find it).
 **Led by:** Hank
+
+## 2026-11-23 — Code steward handoff: Tiffany → ChingChingKao
+**What:** ChingChingKao is the code steward from today, taking over from Tiffany after PR #5 was merged. Her first action as steward is reviewing the MVP code PR (this PR) and then the UI guide PR.
+**Why:** We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
+**Alternative rejected:** Keeping one steward for all MVP PRs, which would leave the other members without a steward record.
+**Led by:** Hank
