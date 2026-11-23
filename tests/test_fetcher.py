@@ -48,6 +48,14 @@ def mocked_repo(rsps):
         {"id": 99, "body": "We delay because of dirty reads", "user": {"login": "bob"},
          "html_url": "https://github.com/o/r/pull/4#issuecomment-99"},
     ])
+    rsps.get(f"{base}/pulls/4/reviews", json=[
+        {"id": 501, "body": "Keep the cache; the API is slow", "state": "APPROVED", "user": {"login": "carol"},
+         "html_url": "https://github.com/o/r/pull/4#pullrequestreview-501"},
+        {"id": 502, "body": "", "state": "APPROVED", "user": {"login": "dave"},
+         "html_url": "https://github.com/o/r/pull/4#pullrequestreview-502"},
+        {"id": 503, "body": None, "state": "COMMENTED", "user": {"login": "erin"},
+         "html_url": "https://github.com/o/r/pull/4#pullrequestreview-503"},
+    ])
     rsps.get(f"{base}/issues", json=[
         {"number": 5, "title": "Bug", "body": "it breaks", "html_url": "https://github.com/o/r/issues/5"},
         {"number": 4, "title": "Add fetcher", "body": "", "html_url": "https://github.com/o/r/pull/4",
@@ -99,6 +107,30 @@ def test_fetch_snapshot_full(mocked_repo):
     assert snap.source("commit:abc1234").title == "init"
 
 
+def test_pr_review_with_body_becomes_source(mocked_repo):
+    snap = fetch_snapshot("https://github.com/o/r")
+    review = snap.source("PR#4/review:501")
+    assert review is not None
+    assert review.type == "pr_review"
+    assert "carol" in review.title
+    assert "APPROVED" in review.title
+    assert review.url == "https://github.com/o/r/pull/4#pullrequestreview-501"
+    assert "API is slow" in review.text
+
+
+def test_pr_review_without_body_is_skipped(mocked_repo):
+    snap = fetch_snapshot("https://github.com/o/r")
+    assert [s.id for s in snap.sources if s.type == "pr_review"] == ["PR#4/review:501"]
+
+
+def test_pr_reviews_404_does_not_fail_fetch(mocked_repo):
+    mocked_repo.replace(responses.GET, f"{API}/o/r/pulls/4/reviews", status=404, json={"message": "Not Found"})
+    snap = fetch_snapshot("https://github.com/o/r")
+    assert any(c.request.url.endswith("/pulls/4/reviews") for c in mocked_repo.calls)
+    assert "PR#4/comment:99" in snap.source_ids()
+    assert not any(s.type == "pr_review" for s in snap.sources)
+
+
 def test_token_sent_as_bearer(mocked_repo):
     fetch_snapshot("https://github.com/o/r", token="tok")
     assert mocked_repo.calls[0].request.headers["Authorization"] == "Bearer tok"
@@ -134,6 +166,7 @@ def test_truncation_recorded(rsps):
         for n in range(1, 31)
     ])
     rsps.get(re.compile(rf"{re.escape(base)}/issues/\d+/comments"), json=[])
+    rsps.get(re.compile(rf"{re.escape(base)}/pulls/\d+/reviews"), json=[])
     rsps.get(f"{base}/issues", json=[])
     rsps.get(f"{base}/commits", json=[])
     snap = fetch_snapshot("https://github.com/o/r")

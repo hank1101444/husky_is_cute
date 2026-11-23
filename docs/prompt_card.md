@@ -45,7 +45,7 @@ Repository: https://github.com/<owner>/<repo> (default branch: main)
 [PR#12] <title>
 <url>
 <body>
-...            (also [PR#12/comment:<id>], [ISSUE#n], [commit:<sha7>], [DECISION:<heading>])
+...            (also [PR#12/comment:<id>], [PR#12/review:<id>], [ISSUE#n], [commit:<sha7>], [DECISION:<heading>])
 
 ## Notes: incomplete data
 - pulls: 只顯示最新 30 筆

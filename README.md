@@ -37,7 +37,7 @@ Then open `.env` and fill in:
 |---|---|---|
 | `ANTHROPIC_API_KEY` | yes | Claude API key (from the course). Never commit or share it. |
 | `ANTHROPIC_MODEL` | no | Defaults to `claude-sonnet-5-5`. |
-| `GITHUB_TOKEN` | recommended | A read-only GitHub token. Without it GitHub allows 60 requests/hour, and each map uses about one request per PR (to read PR comments), so you can hit the limit after one or two maps. Needed for private repos. |
+| `GITHUB_TOKEN` | recommended | A read-only GitHub token. Without it GitHub allows 60 requests/hour, and each map uses about two requests per PR (one for PR comments, one for PR reviews), so you can hit the limit after a single map. Needed for private repos. |
 | `ONBOARDING_DB_PATH` | no | SQLite file, defaults to `data/onboarding.db`. |
 
 `.env` and `data/` are git-ignored.
