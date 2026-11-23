@@ -192,7 +192,8 @@ class Store:
         return ReviewStats(
             total=len(claims),
             accepted_without_edit=sum(1 for c in claims if c["status"] == "verified" and c["claim_id"] not in edited_ids),
-            edited=len(edited_ids),
+            # Current state: a claim counts as edited only while it is still verified.
+            edited=sum(1 for c in claims if c["status"] == "verified" and c["claim_id"] in edited_ids),
             flagged=sum(1 for c in claims if c["status"] == "flagged"),
             review_minutes=minutes,
             questions=n_questions,
