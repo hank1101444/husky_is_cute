@@ -27,3 +27,9 @@
 **Why:** Our test users are Taiwanese students. Showing the map before review resolves the CP1 open question (§3.3) with its fallback: rely on the "inferred" label plus source links instead of blocking on the existing member.
 **Alternative rejected:** English output; a "publish" step before the new member can see the map.
 **Led by:** Hank
+
+## 2026-11-23 — In-page role guide and progress steps (pilot finding)
+**What:** The page shows a short guide for each role (what the buttons and 🟡/✅/⛔ mean, what 「無紀錄的理由」 means, where questions go), the three review buttons are grouped together, and map generation shows step-by-step progress.
+**Why:** In our first internal pilot (Hank, 2026-11-23) the page was not self-explanatory ("我怎麼看？", "不同成員能幹嘛？") and the spinner gave no sense of progress. Details in `docs/design_rationale.md` §2. This is a team-member pilot, not one of the CP2 user-testing sessions.
+**Alternative rejected:** A separate help page (one more click; first-time users would not find it).
+**Led by:** Hank
