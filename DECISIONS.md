@@ -44,3 +44,9 @@
 **Why:** We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
 **Alternative rejected:** Keeping one steward for all MVP PRs, which would leave the other members without a steward record.
 **Led by:** Hank
+
+## 2026-11-23 — Code steward handoff: ChingChingKao → ShenChiaoHsuan
+**What:** ShenChiaoHsuan is the code steward from today, taking over from ChingChingKao. As steward, ShenChiaoHsuan reviewed and approved ChingChingKao's PR #8 (percent-encode `file:` source links) and PR #9 (count edited claims by current status).
+**Why:** ChingChingKao wrote PR #8 and PR #9 and cannot approve her own work. We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
+**Alternative rejected:** ChingChingKao staying steward, which would leave ShenChiaoHsuan without a steward record.
+**Led by:** ShenChiaoHsuan
