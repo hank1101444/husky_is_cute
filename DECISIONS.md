@@ -62,3 +62,15 @@
 **Why:** TiffanyChen-tc asked for a faster way to reach the reading order, the module list and a specific module on a long map, and for the index to look like a tidy navigation panel rather than a plain underlined link list.
 **Alternative rejected:** Keeping manual scrolling as the only way to locate sections.
 **Led by:** TiffanyChen-tc
+
+## 2026-11-24 — Collision-safe module ID deduplication
+**What:** Reserve all original module IDs before renaming duplicates. Keep the first occurrence of each original ID and assign duplicates the smallest available numeric suffix, avoiding both original and newly assigned IDs. Preserve module order, non-ID fields and relation targets.
+**Why:** A generated suffix can otherwise collide with an original ID such as a-2, leaving duplicate IDs. Reserving originals keeps distinct modules identifiable without redirecting references to an existing original ID.
+**Alternative rejected:** Renaming duplicates using only per-ID occurrence counts without reserving the original IDs.
+**Led by:** TiffanyChen-tc
+
+## 2026-11-24 — Code steward handoff: TiffanyChen-tc → hank1101444
+**What:** hank1101444 is the code steward from today, taking over from TiffanyChen-tc.
+**Why:** We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
+**Alternative rejected:** TiffanyChen-tc staying steward.
+**Led by:** TiffanyChen-tc

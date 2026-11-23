@@ -6,7 +6,7 @@ import pydantic
 import pytest
 
 from onboarding_map.mapper import MapperError, draft_map
-from onboarding_map.models import OnboardingMapDraft
+from onboarding_map.models import DraftRelation, OnboardingMapDraft
 from onboarding_map.prompts import SYSTEM_PROMPT
 
 
@@ -95,3 +95,34 @@ def test_duplicate_module_ids_are_renamed(snap, good_draft):
     fc = FakeClient(result=SimpleNamespace(stop_reason="end_turn", parsed_output=good_draft))
     out = draft_map(snap, client=fc, model="m")
     assert [m.id for m in out.modules] == ["a", "a-2"]
+
+
+def _draft_with_ids(good_draft, ids):
+    base = good_draft.modules[1]
+    modules = [base.model_copy(update={"id": mid, "name": f"module {i}"}) for i, mid in enumerate(ids)]
+    return good_draft.model_copy(update={"modules": modules})
+
+
+# Regression: a generated suffix must not collide with an id the model already returned (e.g. "a-2"),
+# whichever comes first; already unique ids stay as they are.
+@pytest.mark.parametrize("ids,expected", [
+    (["a", "a", "a-2"], ["a", "a-3", "a-2"]),
+    (["a", "a-2", "a"], ["a", "a-2", "a-3"]),
+    (["a", "a-2", "b"], ["a", "a-2", "b"]),
+])
+def test_dedupe_suffix_does_not_collide_with_original_ids(snap, good_draft, ids, expected):
+    fc = FakeClient(result=SimpleNamespace(stop_reason="end_turn", parsed_output=_draft_with_ids(good_draft, ids)))
+    out = draft_map(snap, client=fc, model="fake-model")
+    assert [m.id for m in out.modules] == expected
+    assert len({m.id for m in out.modules}) == len(out.modules)
+    assert [m.name for m in out.modules] == [f"module {i}" for i in range(len(ids))]  # order and fields kept
+
+
+def test_dedupe_keeps_relation_targets_on_original_ids(snap, good_draft):
+    draft = _draft_with_ids(good_draft, ["a", "a", "a-2"])
+    draft.modules[0].relations = [DraftRelation(target_module_id="a-2", reason="r", source_ids=["PR#1"])]
+    fc = FakeClient(result=SimpleNamespace(stop_reason="end_turn", parsed_output=draft))
+    out = draft_map(snap, client=fc, model="fake-model")
+    assert out.modules[0].relations[0].target_module_id == "a-2"
+    # "a-2" still names exactly one module: the one the model originally called "a-2".
+    assert [m.name for m in out.modules if m.id == "a-2"] == ["module 2"]
