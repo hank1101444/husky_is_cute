@@ -126,6 +126,12 @@ Chinese; no forbidden "invented reason" words; no half-width comma inside Chines
 - **Reading-order reasons** sometimes come out as 「無紀錄的理由」 for files like `README.md`, which is
   correct by our rule but reads oddly; a later prompt change could let reading-order reasons be the
   AI's own suggestion, labelled as such.
+- **Decorated 「無紀錄的理由」.** The full-width punctuation rule can make the model write
+  「無紀錄的理由。」, 「「無紀錄的理由」」 or add spaces. `validate` (`mapper._is_no_reason`) now strips
+  surrounding whitespace, 「」 and 。.!！ before comparing, so these are no longer flagged as
+  「理由沒有附上來源」. Sentences that only contain the phrase (e.g. a guessed reason) are still not
+  treated as NO_REASON. The live suite's `NO_REASON in c.text` check cannot catch this; the offline
+  tests in `tests/test_mapper_validation.py` do.
 - **Run-to-run variation.** Outputs differ between runs; one green suite run is evidence, not proof.
 
 ## Revision history
