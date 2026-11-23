@@ -50,3 +50,15 @@
 **Why:** ChingChingKao wrote PR #8 and PR #9 and cannot approve her own work. We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
 **Alternative rejected:** ChingChingKao staying steward, which would leave ShenChiaoHsuan without a steward record.
 **Led by:** ShenChiaoHsuan
+
+## 2026-11-23 — Code steward handoff: ShenChiaoHsuan → TiffanyChen-tc
+**What:** TiffanyChen-tc is the code steward from today, taking over from ShenChiaoHsuan.
+**Why:** We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
+**Alternative rejected:** ShenChiaoHsuan staying steward.
+**Led by:** TiffanyChen-tc
+
+## 2026-11-23 — Sidebar in-page index
+**What:** The sidebar shows a page index below the role and map selectors: links to 「從這裡開始」, 「模組」 and every module of the selected map, in module order, inside a compact rounded panel with two native collapsible levels (「頁面索引」 for the whole panel, 「模組清單」 with the module count). Links scroll the same page; the full page stays as it is (no tabs, separate pages or module filtering).
+**Why:** TiffanyChen-tc asked for a faster way to reach the reading order, the module list and a specific module on a long map, and for the index to look like a tidy navigation panel rather than a plain underlined link list.
+**Alternative rejected:** Keeping manual scrolling as the only way to locate sections.
+**Led by:** TiffanyChen-tc

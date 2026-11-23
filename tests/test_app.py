@@ -1,3 +1,5 @@
+import re
+from html.parser import HTMLParser
 from pathlib import Path
 from types import SimpleNamespace
 
@@ -182,3 +184,219 @@ def test_file_source_links_form_valid_markdown(seeded_special_paths):
     for url in urls:
         assert url.startswith("https://github.com/o/r/blob/main/")
         assert not any(ch in url for ch in " ()#") and url.isascii()
+
+
+# Sidebar page index: a two-level native <details> panel below the role / map selectors whose
+# links jump to targets that are actually rendered on the main page.
+SAFE_ANCHOR = re.compile(r"^[A-Za-z][A-Za-z0-9_-]*$")
+
+
+class _Node:
+    def __init__(self, tag: str, attrs: dict, parent: "_Node | None"):
+        self.tag, self.attrs, self.parent, self.children, self.text = tag, attrs, parent, [], ""
+
+    def walk(self):
+        for child in self.children:
+            yield child
+            yield from child.walk()
+
+    def find_all(self, tag: str) -> list["_Node"]:
+        return [n for n in self.walk() if n.tag == tag]
+
+    def full_text(self) -> str:
+        return self.text + "".join(c.full_text() for c in self.children)
+
+
+class _TreeBuilder(HTMLParser):
+    VOID = {"br", "hr", "img", "input", "meta", "link"}
+
+    def __init__(self):
+        super().__init__()
+        self.root = self.cur = _Node("root", {}, None)
+
+    def handle_starttag(self, tag, attrs):
+        node = _Node(tag, dict(attrs), self.cur)
+        self.cur.children.append(node)
+        if tag not in self.VOID:
+            self.cur = node
+
+    def handle_endtag(self, tag):
+        node = self.cur
+        while node is not self.root and node.tag != tag:
+            node = node.parent
+        if node is not self.root:
+            self.cur = node.parent
+
+    def handle_data(self, data):
+        if self.cur.tag != "style":
+            self.cur.text += data
+
+
+def _parse(body: str) -> _Node:
+    builder = _TreeBuilder()
+    builder.feed(body)
+    return builder.root
+
+
+def _index_html(at: AppTest) -> str | None:
+    bodies = [h.value for h in at.sidebar.html if "onboarding-page-index" in h.value]
+    assert len(bodies) <= 1
+    return bodies[0] if bodies else None
+
+
+def _index_links(at: AppTest) -> list[tuple[str, str]]:
+    return [(a.attrs["href"], a.full_text().strip()) for a in _parse(_index_html(at)).find_all("a")]
+
+
+def _main_targets(at: AppTest) -> set[str]:
+    """Every id the main page renders: subheader anchors and module marker elements."""
+    ids = {h.proto.anchor for h in at.main.subheader if h.proto.anchor}
+    for h in at.main.html:
+        ids |= {n.attrs["id"] for n in _parse(h.value).walk() if n.attrs.get("id")}
+    return ids
+
+
+def _marker_then_expander(at: AppTest) -> list[tuple[str, str]]:
+    """(marker id, label of the expander rendered right after it) for each main-page marker."""
+    nodes = list(at.main.children.values())
+    pairs = []
+    for node, nxt in zip(nodes, nodes[1:]):
+        if node.type == "html":
+            ids = [n.attrs["id"] for n in _parse(node.value).walk() if n.attrs.get("id")]
+            if ids:
+                pairs.append((ids[0], nxt.label if nxt.type == "expander" else f"<{nxt.type}>"))
+    return pairs
+
+
+def test_page_index_sits_below_selectors_with_overview_and_module_links(seeded_flagged):
+    at = run_app()
+    assert not at.exception
+    types = [n.type for n in at.sidebar.children.values()]
+    assert types.index("radio") < types.index("selectbox") < types.index("html")
+    assert at.sidebar.radio[0].label == "角色" and at.sidebar.selectbox[0].label == "地圖"
+    links = _index_links(at)
+    assert [text for _, text in links] == ["從這裡開始", "模組", "入口模組", "處理模組"]
+    hrefs = [href for href, _ in links]
+    assert all(h.startswith("#") and SAFE_ANCHOR.match(h[1:]) for h in hrefs)
+    assert len(set(hrefs)) == len(hrefs)
+    # Every link points at something the main page actually renders.
+    assert {h[1:] for h in hrefs} <= _main_targets(at)
+    assert [i for i, _ in _marker_then_expander(at)] == [h[1:] for h in hrefs[2:]]
+    assert [label for _, label in _marker_then_expander(at)] == ["入口模組（a）", "處理模組（b）"]
+
+
+def test_page_index_has_two_independent_open_disclosures(seeded_flagged):
+    root = _parse(_index_html(run_app()))
+    outer = [d for d in root.find_all("details") if not any(p.tag == "details" for p in _ancestors(d))]
+    assert len(outer) == 1
+    outer = outer[0]
+    assert "open" in outer.attrs
+    assert outer.children[0].tag == "summary" and "頁面索引" in outer.children[0].full_text()
+    inner = outer.find_all("details")
+    assert len(inner) == 1 and "open" in inner[0].attrs
+    summary = inner[0].children[0]
+    assert summary.tag == "summary" and "模組清單" in summary.full_text()
+    assert _module_badge(summary) == "2"
+    # Summaries only toggle; navigation links live outside them.
+    assert not any(s.find_all("a") for s in root.find_all("summary"))
+    overview = [a.full_text().strip() for a in outer.find_all("a") if inner[0] not in _ancestors(a)]
+    assert overview == ["從這裡開始", "模組"]
+    assert [a.full_text().strip() for a in inner[0].find_all("a")] == ["入口模組", "處理模組"]
+    # Only one "頁面索引" title, inside the panel.
+    assert sum("頁面索引" in m.value for m in run_app().sidebar.markdown) == 0
+
+
+def _module_badge(summary: _Node) -> str:
+    return summary.full_text().replace("模組清單", "").strip()
+
+
+def _ancestors(node: _Node) -> list[_Node]:
+    out = []
+    while node.parent is not None:
+        node = node.parent
+        out.append(node)
+    return out
+
+
+def test_page_index_same_links_for_alice_without_flagged_text(seeded_flagged):
+    bob = run_app()
+    alice = run_app()
+    alice.sidebar.radio[0].set_value("新成員 (Alice)").run()
+    assert not alice.exception
+    assert _index_links(alice) == _index_links(bob)
+    assert {h[1:] for h, _ in _index_links(alice)} <= _main_targets(alice)
+    assert seeded_flagged.flagged_text not in _index_html(alice)
+    assert seeded_flagged.flagged_text not in _index_html(bob)
+
+
+TRICKY_MODULES = [
+    ("x", "資料處理"),
+    ("x-2", "資料處理"),
+    ("a b/<c>", ""),
+    ("Ω", "<script>alert(1)</script> **粗體** [連結](http://e.com)"),
+    ("9", "一個非常非常長的中文模組名稱用來測試換行是否會被截斷或與圖示重疊的情況"),
+]
+
+
+@pytest.fixture
+def seeded_tricky(app_env, snap, good_draft):
+    module = good_draft.modules[1]
+    modules = [module.model_copy(update={"id": mid, "name": name}) for mid, name in TRICKY_MODULES]
+    draft = good_draft.model_copy(update={"modules": modules})
+    Store(app_env).save_map(snap, draft, validate(draft, snap))
+
+
+def test_page_index_anchors_unique_and_safe_for_tricky_modules(seeded_tricky):
+    at = run_app()
+    assert not at.exception
+    body = _index_html(at)
+    assert "<script" not in body and "&lt;script&gt;" in body
+    links = _index_links(at)[2:]
+    hrefs = [h for h, _ in links]
+    assert len(set(hrefs)) == len(TRICKY_MODULES)
+    assert all(SAFE_ANCHOR.match(h[1:]) for h in hrefs)
+    labels = [text for _, text in links]
+    # Duplicate names are told apart by their ids; a blank name falls back to the id.
+    assert labels[0] != labels[1] and "x" in labels[0] and "x-2" in labels[1]
+    assert labels[2] == "a b/<c>"
+    assert labels[3].startswith("<script>alert(1)</script> **粗體**")  # kept as plain text
+    assert labels[4] == TRICKY_MODULES[4][1]
+    assert [i for i, _ in _marker_then_expander(at)] == [h[1:] for h in hrefs]
+    assert _module_badge(_parse(body).find_all("details")[1].children[0]) == str(len(TRICKY_MODULES))
+
+
+def test_page_index_follows_selected_map(seeded_flagged, snap, good_draft):
+    module = good_draft.modules[0].model_copy(update={"id": "z", "name": "另一張圖的模組"})
+    draft = good_draft.model_copy(update={"modules": [module]})
+    other = snap.model_copy(update={"repo": "other", "url": "https://github.com/o/other"})
+    second = seeded_flagged.store.save_map(other, draft, validate(draft, other))
+    at = run_app()
+    at.sidebar.selectbox[0].set_value(seeded_flagged.map_id).run()
+    first_links = _index_links(at)
+    at.sidebar.selectbox[0].set_value(second).run()
+    assert not at.exception
+    links = _index_links(at)
+    assert [t for _, t in links] == ["從這裡開始", "模組", "另一張圖的模組"]
+    assert not {h for h, _ in first_links[2:]} & {h for h, _ in links}
+    assert {h[1:] for h, _ in links} <= _main_targets(at)
+    assert _module_badge(_parse(_index_html(at)).find_all("details")[1].children[0]) == "1"
+
+
+def test_page_index_absent_without_map(app_env):
+    at = run_app()
+    assert not at.exception
+    assert _index_html(at) is None
+    assert not any("href" in h.value for h in at.sidebar.html)
+
+
+def test_page_index_without_modules_has_no_module_group(app_env, snap, good_draft):
+    draft = good_draft.model_copy(update={"modules": []})
+    Store(app_env).save_map(snap, draft, validate(draft, snap))
+    at = run_app()
+    assert not at.exception
+    root = _parse(_index_html(at))
+    assert len(root.find_all("details")) == 1
+    assert "沒有模組" in root.full_text()
+    hrefs = [a.attrs["href"][1:] for a in root.find_all("a")]
+    assert len(hrefs) == 2 and set(hrefs) <= _main_targets(at)
+    assert "（沒有模組）" in page_text(at)

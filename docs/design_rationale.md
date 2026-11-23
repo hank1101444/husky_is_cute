@@ -19,6 +19,7 @@ Decisions that changed scope or architecture are also in [`DECISIONS.md`](../DEC
 | D8 | **One shared app, a role switch in the sidebar, no login.** | CP2 asks for a prototype two people can use together, built in one week. Accounts add no evidence about the onboarding interaction itself. |
 | D9 | **Step-by-step progress while a map is generated** (reading GitHub → Claude drafting → validating). | Pilot finding P1 (§2). |
 | D10 | **An in-page guide for each role, and the three review buttons grouped together.** | Pilot finding P2 (§2). |
+| D11 | **A sidebar page index** below the role and map selectors: 「從這裡開始」, 「模組」 and one link per module, in a panel with two collapsible levels (「頁面索引」, 「模組清單」 with the module count). Links scroll the same full page. | TiffanyChen-tc's navigation and design request (2026-11-23), recorded in `DECISIONS.md`. Not a pilot or user-testing finding; we have no measurements of its effect yet. |
 
 ## 2. Internal pilot (team member, not counted as user testing)
 
