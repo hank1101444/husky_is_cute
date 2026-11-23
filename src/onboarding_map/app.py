@@ -8,6 +8,7 @@ Two roles share one running app and one SQLite DB:
 from __future__ import annotations
 
 import os
+from urllib.parse import quote
 
 import streamlit as st
 
@@ -39,7 +40,9 @@ def source_links(m: LoadedMap, source_ids: list[str]) -> str:
     links = []
     for sid in source_ids:
         if sid.startswith("file:"):
-            links.append(f"[{sid}]({m.snapshot.url}/blob/{m.snapshot.default_branch}/{sid[5:]})")
+            # Percent-encode the path (spaces, parentheses, '#', non-ASCII) but keep '/' separators.
+            path = quote(sid[5:], safe="/")
+            links.append(f"[{sid}]({m.snapshot.url}/blob/{m.snapshot.default_branch}/{path})")
         elif (src := m.snapshot.source(sid)) is not None:
             links.append(f"[{sid}]({src.url})")
         else:

@@ -138,3 +138,47 @@ def test_alice_sees_role_guide(app_env):
     guide = " ".join(i.value for i in at.info)
     assert "你是新成員" in guide and "從這裡開始" in guide and "提問" in guide
     assert "你是既有成員" not in guide
+
+
+# Regression: file:<path> source links must percent-encode the path (spaces, parentheses, '#',
+# non-ASCII) so the GitHub URL points at the right file and the Markdown link is not broken.
+SPECIAL_PATHS = {
+    "src/b.py": "src/b.py",
+    "docs/My Notes.md": "docs/My%20Notes.md",
+    "src/utils (old)/a.py": "src/utils%20%28old%29/a.py",
+    "notes/#1.md": "notes/%231.md",
+    "文件/說明.md": "%E6%96%87%E4%BB%B6/%E8%AA%AA%E6%98%8E.md",
+}
+
+
+@pytest.fixture
+def seeded_special_paths(app_env, snap, good_draft):
+    snap = snap.model_copy(update={"tree": [*snap.tree, *SPECIAL_PATHS]})
+    module_b = good_draft.modules[1].model_copy(
+        update={"purpose_source_ids": [f"file:{p}" for p in SPECIAL_PATHS]}
+    )
+    draft = good_draft.model_copy(update={"modules": [good_draft.modules[0], module_b]})
+    store = Store(app_env)
+    store.save_map(snap, draft, validate(draft, snap))
+
+
+def _source_caption(at: AppTest) -> str:
+    return next(c.value for c in at.caption if "file:src/b.py" in c.value)
+
+
+@pytest.mark.parametrize("path,encoded", SPECIAL_PATHS.items())
+def test_file_source_link_is_url_encoded(seeded_special_paths, path, encoded):
+    at = run_app()
+    assert not at.exception
+    expected = f"[file:{path}](https://github.com/o/r/blob/main/{encoded})"
+    assert expected in _source_caption(at)
+
+
+def test_file_source_links_form_valid_markdown(seeded_special_paths):
+    at = run_app()
+    caption = _source_caption(at)
+    urls = [part.split(")")[0] for part in caption.split("](")[1:]]
+    assert len(urls) == len(SPECIAL_PATHS)
+    for url in urls:
+        assert url.startswith("https://github.com/o/r/blob/main/")
+        assert not any(ch in url for ch in " ()#") and url.isascii()
