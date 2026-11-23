@@ -2,7 +2,51 @@
 
 from __future__ import annotations
 
+import anthropic
+
+from onboarding_map.config import load_settings
 from onboarding_map.models import NO_REASON, Claim, OnboardingMapDraft, RepoSnapshot, ValidationResult
+from onboarding_map.prompts import SYSTEM_PROMPT, build_user_prompt
+
+MAX_TOKENS = 16000
+FALLBACK_BETA = "server-side-fallback-2026-07-01"
+
+
+class MapperError(Exception):
+    """User-facing (zh-TW) error while drafting a map."""
+
+
+def draft_map(snapshot: RepoSnapshot, client: anthropic.Anthropic | None = None,
+              model: str | None = None) -> OnboardingMapDraft:
+    """Ask Claude for a structured onboarding-map draft. Server-side refusal fallback is enabled."""
+    model = model or load_settings().anthropic_model
+    try:
+        client = client or anthropic.Anthropic()
+        response = client.beta.messages.parse(
+            model=model,
+            max_tokens=MAX_TOKENS,
+            system=SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": build_user_prompt(snapshot)}],
+            output_format=OnboardingMapDraft,
+            betas=[FALLBACK_BETA],
+            fallbacks="default",
+        )
+    except anthropic.AuthenticationError as exc:
+        raise MapperError("ANTHROPIC_API_KEY 無效或未設定（請檢查 .env）") from exc
+    except anthropic.RateLimitError as exc:
+        raise MapperError("Claude API 使用量已達上限，請稍後再試") from exc
+    except anthropic.APIStatusError as exc:
+        raise MapperError(f"Claude API 錯誤（{exc.status_code}）") from exc
+    except anthropic.APIConnectionError as exc:
+        raise MapperError("無法連線到 Claude API") from exc
+
+    if response.stop_reason == "refusal":
+        raise MapperError("AI 拒絕產生這份地圖")
+    if response.stop_reason == "max_tokens":
+        raise MapperError("地圖太長被截斷，請縮小範圍再試")
+    if response.parsed_output is None:
+        raise MapperError("AI 回傳格式錯誤，請再試一次")
+    return response.parsed_output
 
 
 def _check_sources(source_ids: list[str], known: set[str]) -> list[str]:
