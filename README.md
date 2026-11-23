@@ -83,7 +83,7 @@ Each module has one job, which makes it a good unit for an improvement PR:
 ## How we work
 
 - Branch → pull request into `main` (protected, one approval). Fill in
-  `.github/PULL_REQUEST_TEMPLATE.md`, including the **AI involvement** line.
+  `.github/pull_request_template.md`, including the **AI assistance** section.
 - Significant choices go in [`DECISIONS.md`](DECISIONS.md): what was chosen, why, what was rejected,
   who led it.
 - AI tools: see [`docs/ai_usage_guidelines.md`](docs/ai_usage_guidelines.md). Prompts whose output
