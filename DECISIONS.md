@@ -33,3 +33,9 @@
 **Why:** Hank wrote the MVP pull requests and cannot approve his own work. CP2 also requires every member to serve as steward at least once and to approve two PRs as steward with a real comment, so we rotate now instead of at the end.
 **Alternative rejected:** Hank staying steward until merge day. That would leave him reviewing nothing of his own and the others with no steward record.
 **Led by:** Hank
+
+## 2026-11-23 — Code steward handoff: Tiffany → ChingChingKao
+**What:** ChingChingKao is the code steward from today, taking over from Tiffany after PR #5 was merged. Her first action as steward is reviewing the MVP code PR (this PR) and then the UI guide PR.
+**Why:** We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
+**Alternative rejected:** Keeping one steward for all MVP PRs, which would leave the other members without a steward record.
+**Led by:** Hank
