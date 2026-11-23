@@ -55,6 +55,11 @@ Anyone who can reach that URL can use the app, so only run it on networks you tr
 
 Generating a map takes about 20 seconds for a small repository.
 
+When a map is selected, the sidebar shows a **頁面索引** panel below the role and map selectors. Its
+links jump within the same page to 「從這裡開始」, 「模組」 and each module (a collapsed module is
+scrolled to but not opened). Click 「頁面索引」 to fold the whole panel, or 「模組清單」 (the badge is
+the number of modules) to fold only the module links.
+
 ## Test
 
 ```bash
@@ -103,3 +108,6 @@ Each module has one job, which makes it a good unit for an improvement PR:
 - Answers are not yet turned into `DECISIONS.md` pull requests (planned).
 - A map is not updated when the repository changes. Generate a new one instead (old maps stay
   selectable).
+- The page index's folded / unfolded state lives only in the browser. Clicking index links keeps it;
+  in our browser check it also survived Streamlit reruns after typing or switching role. A page
+  reload starts with both levels open again, and other reruns (such as a map switch) may reset it.

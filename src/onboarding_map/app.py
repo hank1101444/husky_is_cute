@@ -7,7 +7,9 @@ Two roles share one running app and one SQLite DB:
 
 from __future__ import annotations
 
+import html
 import os
+import re
 from urllib.parse import quote
 
 import streamlit as st
@@ -34,6 +36,50 @@ ROLE_GUIDE = {
         "看不懂的地方，在該模組底下的問答框提問，既有成員回答後會留在地圖上。"
     ),
 }
+READING_ANCHOR = "onboarding-reading-order"
+MODULES_ANCHOR = "onboarding-modules"
+# Styles only the sidebar page index (.onboarding-page-index) and its scroll targets.
+PAGE_INDEX_CSS = """
+.onboarding-page-index { font-size: 0.9rem; line-height: 1.4; }
+.onboarding-page-index .opi-panel {
+  border: 1px solid rgba(128, 128, 128, 0.3); border-radius: 12px; padding: 0.4rem;
+}
+.onboarding-page-index summary {
+  list-style: none; display: flex; align-items: center; gap: 0.5rem; cursor: pointer;
+  padding: 0.45rem 0.55rem; border-radius: 8px; font-weight: 600; color: inherit;
+}
+.onboarding-page-index summary::-webkit-details-marker { display: none; }
+.onboarding-page-index summary::marker { content: ""; }
+.onboarding-page-index .opi-chevron {
+  flex: none; width: 0.42rem; height: 0.42rem; margin: 0 0.15rem;
+  border-right: 2px solid currentColor; border-bottom: 2px solid currentColor;
+  opacity: 0.65; transform: rotate(-45deg); transition: transform 0.15s ease;
+}
+.onboarding-page-index details[open] > summary > .opi-chevron { transform: rotate(45deg); }
+.onboarding-page-index .opi-title { flex: 1 1 auto; min-width: 0; }
+.onboarding-page-index .opi-badge {
+  flex: none; min-width: 1.4rem; padding: 0.15rem 0.45rem; border-radius: 999px; text-align: center;
+  font-size: 0.75rem; font-weight: 600; background: rgba(128, 128, 128, 0.18);
+}
+.onboarding-page-index .opi-body { display: flex; flex-direction: column; gap: 2px; padding-top: 0.15rem; }
+.onboarding-page-index a.opi-link,
+.onboarding-page-index a.opi-link:visited {
+  display: block; padding: 0.5rem 0.6rem 0.5rem 1.65rem; border-radius: 8px;
+  color: inherit; text-decoration: none; overflow-wrap: anywhere;
+}
+.onboarding-page-index summary:hover,
+.onboarding-page-index a.opi-link:hover { background: rgba(28, 131, 225, 0.1); color: inherit; }
+.onboarding-page-index a.opi-link:focus-visible,
+.onboarding-page-index summary:focus-visible { outline: 2px solid #1c83e1; outline-offset: 1px; }
+.onboarding-page-index .opi-modules {
+  list-style: none; margin: 0.1rem 0 0 1.2rem; padding: 0 0 0 0.35rem; font-size: inherit; line-height: inherit;
+  border-left: 1px solid rgba(128, 128, 128, 0.3);
+}
+.onboarding-page-index .opi-modules li { margin: 0; padding: 0; font-size: inherit; line-height: inherit; }
+.onboarding-page-index .opi-modules a.opi-link { padding-left: 0.6rem; }
+.onboarding-page-index .opi-note { margin: 0; padding: 0.4rem 0.6rem 0.4rem 1.65rem; opacity: 0.75; }
+.onboarding-page-index-target, #onboarding-reading-order, #onboarding-modules { scroll-margin-top: 4.5rem; }
+"""
 
 
 def source_links(m: LoadedMap, source_ids: list[str]) -> str:
@@ -82,8 +128,62 @@ def visible(claims: list[Claim], role: str) -> list[Claim]:
     return claims if role == ROLE_BOB else [c for c in claims if c.status != "flagged"]
 
 
+def module_anchors(m: LoadedMap) -> list[str]:
+    """Deterministic, unique HTML ids for the module targets of this map.
+
+    The position makes each id unique; the ASCII part of the module id only helps readability.
+    """
+    anchors = []
+    for i, module in enumerate(m.draft.modules, start=1):
+        safe = re.sub(r"[^A-Za-z0-9]+", "-", module.id).strip("-")[:40]
+        anchors.append(f"onboarding-map{m.map_id}-module{i}" + (f"-{safe}" if safe else ""))
+    return anchors
+
+
+def module_index_labels(modules: list[DraftModule]) -> list[str]:
+    """Index labels: the module name, plus its id when the name repeats; the id when the name is blank."""
+    names = [mod.name.strip() for mod in modules]
+    labels = []
+    for mod, name in zip(modules, names):
+        if not name:
+            labels.append(mod.id)
+        elif names.count(name) > 1:
+            labels.append(f"{name}（{mod.id}）")
+        else:
+            labels.append(name)
+    return labels
+
+
+def page_index_html(m: LoadedMap) -> str:
+    """Sidebar page index: two native <details> levels; summaries only toggle, links only navigate."""
+    def link(anchor: str, label: str) -> str:
+        return f'<a class="opi-link" href="#{anchor}">{html.escape(label)}</a>'
+
+    modules = m.draft.modules
+    if modules:
+        items = "".join(
+            f"<li>{link(anchor, label)}</li>"
+            for anchor, label in zip(module_anchors(m), module_index_labels(modules))
+        )
+        group = (
+            '<details class="opi-group" open><summary><span class="opi-chevron" aria-hidden="true"></span>'
+            f'<span class="opi-title">模組清單</span><span class="opi-badge">{len(modules)}</span></summary>'
+            f'<ul class="opi-modules">{items}</ul></details>'
+        )
+    else:
+        group = '<p class="opi-note">（沒有模組）</p>'
+    return (
+        f"<style>{PAGE_INDEX_CSS}</style>"
+        '<nav class="onboarding-page-index" aria-label="頁面索引">'
+        '<details class="opi-panel" open><summary><span class="opi-chevron" aria-hidden="true"></span>'
+        '<span class="opi-title">頁面索引</span></summary>'
+        f'<div class="opi-body">{link(READING_ANCHOR, "從這裡開始")}{link(MODULES_ANCHOR, "模組")}{group}</div>'
+        "</details></nav>"
+    )
+
+
 def render_reading_order(store: Store, m: LoadedMap, role: str) -> None:
-    st.subheader("從這裡開始")
+    st.subheader("從這裡開始", anchor=READING_ANCHOR)
     reading = visible([c for c in m.claims if c.kind == "reading"], role)
     if not reading:
         st.markdown("（沒有建議的閱讀順序）")
@@ -91,7 +191,9 @@ def render_reading_order(store: Store, m: LoadedMap, role: str) -> None:
         render_claim(store, m, claim, role)
 
 
-def render_module(store: Store, m: LoadedMap, module: DraftModule, role: str) -> None:
+def render_module(store: Store, m: LoadedMap, module: DraftModule, role: str, anchor: str) -> None:
+    # Index target sits before the expander header, so a collapsed module can still be located.
+    st.html(f'<div id="{anchor}" class="onboarding-page-index-target"></div>')
     with st.expander(f"{module.name}（{module.id}）", expanded=True):
         bad = set(m.invalid_key_files.get(module.id, []))
         files = [f"`{f}`" + (" ⚠ 不在檔案清單中" if f in bad else "") for f in module.key_files]
@@ -195,17 +297,19 @@ def main() -> None:
         map_id = st.sidebar.selectbox("地圖", list(labels), format_func=labels.get, key="map_id")
     else:
         st.sidebar.markdown("尚無地圖")
+    m = store.load_map(map_id) if map_id is not None else None
+    if m is not None:
+        st.sidebar.html(page_index_html(m))
 
     st.title("新成員 Onboarding Map")
     st.info(ROLE_GUIDE[role])
     if role == ROLE_BOB:
         render_generator(store, settings)
-    if map_id is None:
+    if m is None:
         if role == ROLE_ALICE:
             st.info("還沒有地圖，請既有成員先產生一份。")
         return
 
-    m = store.load_map(map_id)
     st.markdown(f"### {m.repo_url}")
     for kind, note in m.snapshot.truncation.items():
         st.info(f"資料不完整（{kind}）：{note}")
@@ -213,9 +317,11 @@ def main() -> None:
     if role == ROLE_BOB:
         render_bob_extras(store, m)
     render_reading_order(store, m, role)
-    st.subheader("模組")
-    for module in m.draft.modules:
-        render_module(store, m, module, role)
+    st.subheader("模組", anchor=MODULES_ANCHOR)
+    if not m.draft.modules:
+        st.markdown("（沒有模組）")
+    for module, anchor in zip(m.draft.modules, module_anchors(m)):
+        render_module(store, m, module, role, anchor)
 
 
 main()
