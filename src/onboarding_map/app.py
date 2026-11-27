@@ -96,8 +96,14 @@ def source_links(m: LoadedMap, source_ids: list[str]) -> str:
     return "來源：" + ("、".join(links) if links else "（無）")
 
 
+def provenance_label(claim: Claim) -> str:
+    """Issue #23: tell readers a person rewrote this claim."""
+    edited = claim.ai_text is not None and claim.text != claim.ai_text  # TODO: use claim.human_edited
+    return " · ✍️ 人工修改" if edited else ""
+
+
 def render_claim(store: Store, m: LoadedMap, claim: Claim, role: str) -> None:
-    st.markdown(f"{STATUS_ICON[claim.status]} **{STATUS_LABEL[claim.status]}** · {claim.text}")
+    st.markdown(f"{STATUS_ICON[claim.status]} **{STATUS_LABEL[claim.status]}**{provenance_label(claim)} · {claim.text}")
     st.caption(source_links(m, claim.source_ids))
     if not claim.valid:
         st.warning("⚠ 來源有問題：" + "；".join(claim.problems))
