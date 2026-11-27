@@ -80,3 +80,20 @@
 **Why:** Group 10's review (A3) found that an edited claim looked the same as an AI claim that was only confirmed. The original text is already stored, so the slice fits one session without touching the schema, review or stats.
 **Alternative rejected:** A provenance column in the database; showing the AI's original text to the new member as well; issue #22 (needs a prompt change and the live suite) or issue #24 as the session's slice.
 **Led by:** hank1101444 (proposal); agreed by all four in the session.
+
+## 2026-11-28 — "Edited" means the text changed, in the stats too
+**What:** `store.stats()` counts a claim as edited only when its current text differs from the AI's original (`text != ai_text`), the same rule as the 「✍️ 人工修改」 label. A claim that was edited back to the AI's exact words, or saved without changing a character, counts as accepted without edit. This updates the walking skeleton entry above, which had planned to leave the stats untouched.
+**Why:** In the review of PR #25, hank1101444 (steward) pointed out that the label compared text while the stats counted any press of 「修改」, so the page and the stats box could disagree about the same claim. "Accepted without edit" is a CP1 evaluation metric, so it needs one definition.
+**Alternative rejected:** Keeping the event-based count and opening an issue for later; counting both "pressed edit" and "changed text" separately.
+**Led by:** ChingChingKao (commit `283bbcc` in PR #25, in reply to hank1101444's review)
+
+## 2026-11-28 — Merge day plan
+**What:** Merge plan for the CP2 merge day, written by the code steward before the session (worksheet: `docs/merge_day.md`). State on 2026-11-28: `main` at `324edd1`, `pytest` 161 passed; no open pull requests; open issues #22 and #24 stay open for Phase 3.
+- Open branches and PRs: (1) `docs/team-sessions`: the two team-session worksheets, the evaluation report, this plan and the stats decision above; ready except for user-testing results; opened by a member other than the steward. (2) `docs/user-testing`: results of the two user-testing sessions in `docs/design_rationale.md` §3 and the evaluation report; ready once both sessions are written up. (3) Already merged branches (`skeleton/*`, `walking-skeleton` and 16 older ones): delete.
+- Merge order: (1) first, because it carries this plan and the evaluation report that (2) builds on; then (2); then delete merged branches and run the fresh-clone test on `main`. Anything else opened on the day goes after these, or becomes an issue if it puts the fresh-clone test at risk.
+- Expected conflicts: `DECISIONS.md` and `docs/prompt_log.md` (both append; keep both sides in date order), possibly `docs/evaluation_report.md` (keep the user-testing numbers from (2)).
+- Close without merging: none.
+- Done today means: `pytest` passes and the app starts on `main`; a member other than the steward clones into a new folder, follows only the README and completes the main task (Bob generates or loads the demo map and reviews claims, Alice asks on a module, Bob answers, Alice sees the answer); no open pull requests.
+**Why:** CP2 asks for a clean `main` that runs end to end on a fresh copy, with every open PR merged or closed together.
+**Alternative rejected:** Merging the user-testing results first; it is branched from `docs/team-sessions`, so it would bring that branch in without its own review.
+**Led by:** hank1101444 (code steward)
