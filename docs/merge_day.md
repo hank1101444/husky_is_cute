@@ -133,7 +133,7 @@
 
 **團隊檢討**（誠實，每題一行）：
 
-*以下 1–3 由 Claude Code 依紀錄草擬，請組員確認或改寫。*
+*以下 1、2 由 Claude Code 依紀錄草擬，請組員確認或改寫；3 由四人確認。*
 
 1. 什麼讓合併變得比需要的更難？（例如：branch 放太久、PR 太大、兩個人改同一個檔案）
 
@@ -146,10 +146,8 @@
 
 3. 每個人都能不靠幫忙跑起原型並完成主要任務嗎？不行的話，誰跟誰在 CP2 前一起練習？
 
-   > 有紀錄的是兩個人：ShenChiaoXiuan 在新資料夾只照 README 完成了主要任務（Part 3），hank1101444 在內部試用
-   > （`design_rationale.md` §2 P1–P2）跑過完整流程。TiffanyChen-tc 和 ChingChingKao 在 walking skeleton 時都在自己的
-   > branch 上做出一塊並跑過 `pytest`，但沒有獨自跑完主要任務的紀錄。CP2 前兩人各自照 README 跑一次示範地圖的主要任務
-   > （Bob 載入並審核 → Alice 提問 → Bob 回答 → Alice 看到）；卡住就和 ShenChiaoXiuan 一起看，他剛做過 fresh clone。
+   > 可以，四人都能不靠幫忙跑起原型並完成主要任務（hank1101444 依四人確認回報）。ShenChiaoXiuan 也在新資料夾只照 README
+   > 完成了 fresh clone 測試（Part 3），不需要另外安排練習。
 
 ---
 
