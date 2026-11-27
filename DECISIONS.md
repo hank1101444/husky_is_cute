@@ -74,3 +74,9 @@
 **Why:** We rotate the steward role so every member serves as steward and approves at least two PRs as steward before CP2 (individual minimum).
 **Alternative rejected:** TiffanyChen-tc staying steward.
 **Led by:** TiffanyChen-tc
+
+## 2026-11-27 — Walking skeleton slice: mark human-edited claims (issue #23)
+**What:** In the walking skeleton session (2026-11-27, online, all four present) we chose one thin slice: a claim that a person has rewritten shows 「✍️ 人工修改」 to both roles, and only the existing member also sees 「原本 AI 寫的：…」. "Edited" is derived from the stored `Claim.ai_text` versus `Claim.text`; no new database column. Split on one shared `walking-skeleton` branch: hank1101444 writes the failing AppTests first, ChingChingKao adds `Claim.human_edited`, TiffanyChen-tc adds the label, ShenChiaoXiuan adds the original-text note. Worksheet: `docs/walking_skeleton.md`.
+**Why:** Group 10's review (A3) found that an edited claim looked the same as an AI claim that was only confirmed. The original text is already stored, so the slice fits one session without touching the schema, review or stats.
+**Alternative rejected:** A provenance column in the database; showing the AI's original text to the new member as well; issue #22 (needs a prompt change and the live suite) or issue #24 as the session's slice; one branch per person (four merges in a short online session).
+**Led by:** hank1101444 (proposal); agreed by all four in the session.
