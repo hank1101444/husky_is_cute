@@ -97,16 +97,14 @@
 **Why:** CP2 asks for a clean `main` that runs end to end on a fresh copy, with every open PR merged or closed together.
 **Alternative rejected:** Merging the user-testing results first; it is branched from `docs/team-sessions`, so it would bring that branch in without its own review.
 **Led by:** hank1101444 (code steward)
+**Outcome (2026-11-28):** Merged #26 (`docs/team-sessions`, approved by hank1101444 as steward after he asked for the PR's test checkboxes to be corrected) and #27 (`docs/user-testing`, approved and merged by TiffanyChen-tc), at 00:57 and 01:07 on 2026-11-28, one day before the planned merge day and not step by step on a shared screen; closed none. No conflicts on GitHub; one conflict in `docs/prompt_log.md` when `docs/user-testing` took in `docs/team-sessions` (both sides changed the end of the table), resolved by keeping both rows (`c442220`). #27 merged the "User testing findings" entry as a draft; all four then agreed to it as written, confirmed in the merge-day records PR (`docs/merge-day-outcome`). Deleted the 23 remote branches already merged into `main`. Fresh clone test by ShenChiaoXiuan (not the steward), following only the README: succeeded with no missing steps reported. `main` is green: `pytest` 161 passed, 13 deselected, and the app starts (`bdf91d1`). Left for after CP2: issues #22 and #24, and the three changes in "User testing findings". Worksheet: `docs/merge_day.md`.
 
-## 2026-11-28 — User testing findings (DRAFT, not yet decided)
-> Draft written by Claude Code from the two session records. The team decides what to change; edit or
-> replace the proposal below, fill in **Led by**, and remove this note before the PR is merged.
-
-**What (proposed):** Record what the two CP2 user-testing sessions found (`docs/design_rationale.md` §3, `docs/evaluation_report.md` E5) and change nothing in the app before CP2 (the merge day plan adds nothing new). After CP2, in this order:
+## 2026-11-28 — User testing findings
+**What:** Record what the two CP2 user-testing sessions found (`docs/design_rationale.md` §3, `docs/evaluation_report.md` E5) and change nothing in the app before CP2 (the merge day plan adds nothing new). After CP2, in this order:
 1. Alice's in-page guide explains 「無紀錄的理由」 in one sentence: the repository has no written reason, which is not the same as the AI not knowing; a person who knows can add it. It also says that 🟡 is not a warning.
 2. A simple arrow diagram of how data moves between modules, drawn from the module relations the map already has.
 3. Mark one main source per claim. This needs a prompt change, so it goes through the live suite and `docs/prompt_card.md`.
 Not changing: module names. Claude takes them from the repository and each module already has a plain description; revisit if later sessions show the same problem.
 **Why:** Both participants found the modules, a file and a module relation from the map (T1–T3), but locating a design reason took longer (Session 2 did not see where it was written; Session 1 did not know which of several source links to open). Session 2 first read 🟡 as "something is wrong" and could not tell whether 「無紀錄的理由」 meant the AI or the developers lacked the reason; Alice's guide explains 🟡 / ✅ but not that phrase (only Bob's guide does). Ratings 4/5 and 3/5.
 **Alternative rejected:** Changing the guide text before CP2: small, but the merge day plan adds nothing new on the day, and one participant was affected.
-**Led by:** *(to fill in: who decided)*
+**Led by:** all four (hank1101444, ChingChingKao, ShenChiaoXiuan, TiffanyChen-tc) agreed to the proposal as written. Drafted by Claude Code from the session records; merged as a draft in PR #27 and confirmed afterwards.
