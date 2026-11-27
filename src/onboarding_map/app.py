@@ -96,13 +96,26 @@ def source_links(m: LoadedMap, source_ids: list[str]) -> str:
     return "來源：" + ("、".join(links) if links else "（無）")
 
 
+def provenance_label(claim: Claim) -> str:
+    """Issue #23: tell readers a person rewrote this claim."""
+    return " · ✍️ 人工修改" if claim.human_edited else ""
+
+
+def original_text_note(claim: Claim) -> str | None:
+    """Issue #23: the AI's original wording, shown to the existing member only."""
+    return f"原本 AI 寫的：{claim.ai_text}" if claim.human_edited else None
+
+
 def render_claim(store: Store, m: LoadedMap, claim: Claim, role: str) -> None:
-    st.markdown(f"{STATUS_ICON[claim.status]} **{STATUS_LABEL[claim.status]}** · {claim.text}")
+    st.markdown(f"{STATUS_ICON[claim.status]} **{STATUS_LABEL[claim.status]}**{provenance_label(claim)} · {claim.text}")
     st.caption(source_links(m, claim.source_ids))
     if not claim.valid:
         st.warning("⚠ 來源有問題：" + "；".join(claim.problems))
     if role != ROLE_BOB:
         return
+    note = original_text_note(claim)
+    if note:
+        st.caption(note)
     edit_key = f"editing-{m.map_id}-{claim.id}"
     cols = st.columns([1, 1, 1, 6])
     if cols[0].button("確認", key=f"confirm-{claim.id}"):

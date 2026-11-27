@@ -112,7 +112,7 @@ def test_duplicate_relations_can_be_saved(store, snap, good_draft):
 
 
 # Regression: stats reflect each claim's *current* status. "edited" counts claims that are
-# currently verified and were edited at least once; an edited-then-flagged claim is only flagged.
+# currently verified and whose text differs from the AI's; an edited-then-flagged claim is only flagged.
 def counts(s):
     inferred = s.total - s.accepted_without_edit - s.edited - s.flagged
     return {"accepted": s.accepted_without_edit, "edited": s.edited, "flagged": s.flagged, "inferred": inferred}
@@ -146,6 +146,19 @@ def test_stats_edit_flag_confirm_sequence_is_consistent(store, saved):
     assert counts(store.stats(saved)) == {"accepted": 0, "edited": 0, "flagged": 1, "inferred": 3}
     store.review_claim(saved, "r:0", "confirm")
     assert counts(store.stats(saved)) == {"accepted": 0, "edited": 1, "flagged": 0, "inferred": 3}
+
+
+@pytest.mark.parametrize("rewrites", [
+    ["Bob 改寫"],  # edited, then changed back to the AI's exact words
+    [],            # saved an edit without changing anything
+])
+def test_stats_edit_back_to_ai_text_counts_as_accepted(store, saved, rewrites):
+    # Same definition as the 「人工修改」 label (Claim.human_edited): compare text, not button presses.
+    ai_text = get_claim(store, saved, "r:0").ai_text
+    for text in [*rewrites, ai_text]:
+        store.review_claim(saved, "r:0", "edit", text)
+    assert not get_claim(store, saved, "r:0").human_edited
+    assert counts(store.stats(saved)) == {"accepted": 1, "edited": 0, "flagged": 0, "inferred": 3}
 
 
 def test_stats_keep_review_history(store, saved):

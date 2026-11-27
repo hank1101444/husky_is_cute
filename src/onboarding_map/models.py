@@ -92,6 +92,11 @@ class Claim(BaseModel):
     status: ClaimStatus = "inferred"
     ai_text: str | None = None
 
+    @property
+    def human_edited(self) -> bool:
+        """True when a person rewrote the AI's text (issue #23)."""
+        return self.ai_text is not None and self.text != self.ai_text
+
 
 class ValidationResult(BaseModel):
     claims: list[Claim]
