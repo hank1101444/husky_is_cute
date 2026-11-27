@@ -121,12 +121,12 @@
 **3b. 一起接（10 分鐘，同一個共享畫面）**，依順序一塊一塊合進整合用的 `walking-skeleton` branch（worksheet 原本叫 `skeleton`，但這個名字和 `skeleton/tests` 在 git 裡會衝突，所以改名）。
 每一塊：由不是作者的人說明它在做什麼；合進去；跑 `pytest` 和範例；失敗就一起修。Hank 分享畫面操作合併。
 
-| 區塊 *（預定順序）* | 誰做的 | 誰講解 | 接上了嗎？（是／修了才接上／還沒） | 接的時候修了什麼 |
+| 區塊（合併順序） | 誰做的 | 誰講解 | 接上了嗎？（是／修了才接上／還沒） | 接的時候修了什麼 |
 |---|---|---|---|---|
-| 1. 失敗的測試（Hank） | hank1101444（用 Claude Code 協助；在 `main` 上 2 failed、原有 154 passed） | *（預定）* ChingChingKao | | |
-| 2. `Claim.human_edited`（Ching） | *（預定）* ChingChingKao | *（預定）* TiffanyChen-tc | | |
-| 3. `provenance_label`（Tiffany） | *（預定）* TiffanyChen-tc | *（預定）* ShenChiaoXiuan | | |
-| 4. `original_text_note`（Shen）+ 接進 `render_claim()` | *（預定）* ShenChiaoXiuan | *（預定）* hank1101444 | | |
+| 1. 失敗的測試（Hank，`skeleton/tests` `24043f0`） | hank1101444（用 Claude Code 協助） | *（預定）* ChingChingKao | 是：`walking-skeleton` 的起點，2 failed、154 passed | — |
+| 2. `Claim.human_edited`（Ching，`skeleton/model` `ef35b50`） | ChingChingKao | *（預定）* TiffanyChen-tc | 是：2 failed、157 passed（她的 3 個新測試通過） | 不需要修 |
+| 3. `provenance_label`（Tiffany，`skeleton/label` `1450497`） | TiffanyChen-tc | *（預定）* ShenChiaoXiuan | 是：1 failed、158 passed | 不需要修 |
+| 4. `original_text_note`（Shen，`skeleton/original` `4a9da37`）+ 接進 `render_claim()` | ShenChiaoXiuan | *（預定）* hank1101444 | 修了才接上：159 passed | `app.py` 衝突：Tiffany 和 Shen 都在 `render_claim()` 上面加了函式。兩個都保留，並把兩行暫用判斷換成 `claim.human_edited`（merge commit `6e68490`） |
 
 **每接一塊要跑的檢查：**
 
@@ -144,11 +144,13 @@ python -m streamlit run src/onboarding_map/app.py
 
 **第一次從頭跑到尾是什麼時候？**（時間，或「還沒」）
 
->
+> 2026-11-28 00:00 左右：四塊接進 `walking-skeleton` 後 `pytest` 159 passed、13 deselected；示範地圖上 Bob 修改一條說法後，
+> Bob 和 Alice 都看到「✅ 已確認 · ✍️ 人工修改」，只有 Bob 看到「原本 AI 寫的：…」。合併由 Claude Code 依 Hank 指示操作。
 
 **我們假了或先寫死了什麼？**
 
->
+> Tiffany 和 Shen 在 Ching 的 `claim.human_edited` 接上之前，先用同樣的判斷
+> `claim.ai_text is not None and claim.text != claim.ai_text`（註記 `TODO`）暫代；接起來時已全部換掉，沒有留下假的部分。
 
 ---
 
