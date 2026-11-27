@@ -89,6 +89,6 @@ what to trust, with the source links and the 🟡/✅/⛔ status in front of the
    `prompt_card.md`.
 4. Ask a real existing member (outside our team) to review a map of their own repository, and read
    review minutes and accepted / edited / flagged counts from the stats box.
-5. Act on the user-testing findings (E5) after a team decision (`DECISIONS.md`, "User testing
+5. Act on the user-testing findings (E5) as decided in `DECISIONS.md` ("User testing
    findings"), then check them in the next sessions: does a new member understand 🟡 and
    「無紀錄的理由」 without help, and find a design reason without searching?

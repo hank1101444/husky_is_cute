@@ -75,7 +75,7 @@ Quotes are the participants' words, lightly condensed by the note-taker.
 - **Q3 rating:** **4 / 5.** Helped because they did not have to read code first to know the modules and what each does; some relations were only clear after opening the source.
 - **Q4 stuck / suggestion:** 「有些來源連結比較多，我一開始不知道要點哪個」; suggests marking the most important source.
 - **Did they understand the labels and 「無紀錄的理由」 without help?** Yes, both.
-- **Changes we made because of this session:** none yet; see the "User testing findings" draft in `DECISIONS.md`.
+- **Changes we made because of this session:** none before CP2; the changes planned after CP2 are in `DECISIONS.md`, "User testing findings".
 
 ### Session 2
 
@@ -98,7 +98,7 @@ Quotes are the participants' words, lightly condensed by the note-taker.
 - **Q3 rating:** **3 / 5.** Easier than the GitHub file list and gave a sense of what the project does, but module names are still technical and needed time with the descriptions.
 - **Q4 stuck / suggestion:** explain 「推論」 vs 「已確認」 more clearly; a simple arrow diagram of how data moves from one module to the next.
 - **Did they understand the labels and 「無紀錄的理由」 without help?** Labels: only after reading the guide. 「無紀錄的理由」: no.
-- **Changes we made because of this session:** none yet; see the "User testing findings" draft in `DECISIONS.md`.
+- **Changes we made because of this session:** none before CP2; the changes planned after CP2 are in `DECISIONS.md`, "User testing findings".
 
 ### What the two sessions show
 
