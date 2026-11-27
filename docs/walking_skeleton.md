@@ -1,7 +1,7 @@
 # Walking Skeleton：團隊工作單
 ## 一次會議，四人一起 | 約 75 分鐘 | 每隊一份
 
-> **狀態：會議進行中，逐步填寫。** 會前草稿由 Hank（code steward）用 Claude Code、依 `main`（`89d69b6`）
+> **狀態：會議已完成（2026-11-27 22:00 – 11-28 01:00），PR #25 已合併。** 3b「誰講解」一欄待 Shen 的紀錄確認。 會前草稿由 Hank（code steward）用 Claude Code、依 `main`（`89d69b6`）
 > 上的程式碼準備；Part 1、Part 2 與 Part 4 的安排已由四人確認。標示 *（預定）* 的是已分工、尚未完成的工作。
 > 其餘空白欄位依實際結果填寫，不確定就留空，不要猜。
 
@@ -164,12 +164,12 @@ python -m streamlit run src/onboarding_map/app.py
 
 | | |
 |---|---|
-| 合併的 PR 連結 | |
+| 合併的 PR 連結 | [#25](https://github.com/hank1101444/husky_is_cute/pull/25)（`walking-skeleton` → `main`，2026-11-28 00:12 由 hank1101444 以 merge commit `324edd1` 合併；`Closes #23`） |
 | PR 作者 | ChingChingKao（統整 PR 描述） |
 | PR 標題 | `feat: show provenance for human-edited claims` |
 | Review 的 steward | hank1101444（依 `DECISIONS.md` 中 TiffanyChen-tc → hank1101444 的交接紀錄） |
-| Steward 的留言（貼過來） | |
-| 作者怎麼回覆 | |
+| Steward 的留言（貼過來） | 四塊接得很乾淨，先寫測試再接的順序也讓每一步看得出進度。想問：「人工修改」是用文字有沒有變來判斷，但統計框的「修改數」是看 Bob 有沒有按過修改；如果 Bob 改完又改回跟 AI 一字不差，畫面不會標人工修改，統計卻算一次修改，這兩個定義要不要統一？還是先開 issue 記下來？ |
+| 作者怎麼回覆 | 改程式：決定統一定義，`store.stats()` 的修改數改成跟「人工修改」標籤一樣比較 `text` 和 `ai_text`；改了又改回 AI 原文、或按修改但沒改字，兩邊都算「未修改即接受」。新增 2 個測試，先失敗後通過（commit `283bbcc`）。之後 steward approve 並合併。合併後 `main`：161 passed、13 deselected。 |
 
 **PR 驗收事項**：修改過的 claim 有標籤、沒修改的沒有；只有 Bob 看得到 AI 原句；Bob 的確認／修改／標記
 與 Alice 問答仍正常；`pytest` 和手動驗收結果附在 PR。
@@ -179,11 +179,15 @@ python -m streamlit run src/onboarding_map/app.py
 > Human-edited claim provenance：用既有 `Claim.ai_text` 和 `Claim.text` 的差異判斷人工修改，
 > 不新增資料庫欄位。Alice 看得到「人工修改」標示，AI 原文只顯示給 Bob。以最小範圍處理 issue #23，不動審核與統計功能。
 
+**Review 後的變更：** 原本決定「不動統計」，但 steward review 發現兩邊對「修改過」的定義不一致，Ching 在 PR 中把統計也改成用文字比較（`283bbcc`）。
+
 ---
 
 ## Part 5 | 團隊檢討（5 分鐘）
 
 *（四人於 Part 3 整合前討論確認；整合後若有不同，再補一行。）*
+
+**整合後補充：** `app.py` 的衝突如預期發生，兩邊都保留後一次解決；steward 的 review 問題找到統計定義不一致，作者在同一個 PR 裡修正並補測試，而不是只回覆。
 
 1. **今天合作上哪裡做得好？**
 
@@ -209,9 +213,9 @@ python -m streamlit run src/onboarding_map/app.py
 
 ## 快速檢查（給我們自己，不評分）
 
-☐ 四個人都出席了
+☑ 四個人都出席了
 ☐ 四個人都做了一塊，而且每塊都由不是作者的人講解過
-☐ 我們有一句共識，說明工具在做什麼
-☐ 各塊接起來了，新切片能跑（就算有些部分是假的）
-☐ PR 由 steward review、至少一則真正的留言，並已合併
-☐ 這份文件存成 `docs/walking_skeleton.md`，`DECISIONS.md` 也加了那一行
+☑ 我們有一句共識，說明工具在做什麼
+☑ 各塊接起來了，新切片能跑（就算有些部分是假的）
+☑ PR 由 steward review、至少一則真正的留言，並已合併
+☑ 這份文件存成 `docs/walking_skeleton.md`，`DECISIONS.md` 也加了那一行
