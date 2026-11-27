@@ -1,7 +1,9 @@
+import pytest
+
 from pathlib import Path
 
 from onboarding_map.config import FetchLimits, load_settings
-from onboarding_map.models import NO_REASON, OnboardingMapDraft, RepoSnapshot, SourceItem
+from onboarding_map.models import NO_REASON, Claim, OnboardingMapDraft, RepoSnapshot, SourceItem
 
 
 def test_snapshot_source_ids_include_files_and_sources():
@@ -42,3 +44,14 @@ def test_draft_json_roundtrip():
 
 def test_no_reason_literal():
     assert NO_REASON == "無紀錄的理由"
+
+
+@pytest.mark.parametrize("text, ai_text, expected", [
+    ("Bob 改寫的說法", "AI 的說法", True),
+    ("AI 的說法", "AI 的說法", False),
+    ("AI 的說法", None, False),
+])
+def test_claim_human_edited(text, ai_text, expected):
+    claim = Claim(id="m:a:purpose", kind="purpose", module_id="a", text=text,
+                  source_ids=[], valid=True, ai_text=ai_text)
+    assert claim.human_edited is expected
