@@ -102,6 +102,9 @@ Each module has one job, which makes it a good unit for an improvement PR:
   [`docs/prompt_card.md`](docs/prompt_card.md).
 - Interaction design decisions, pilot findings and user-testing notes:
   [`docs/design_rationale.md`](docs/design_rationale.md).
+- What we have and have not shown so far: [`docs/evaluation_report.md`](docs/evaluation_report.md).
+- Team sessions (CP2): [`docs/walking_skeleton.md`](docs/walking_skeleton.md) and
+  [`docs/merge_day.md`](docs/merge_day.md).
 
 ## Known limitations (MVP)
 
