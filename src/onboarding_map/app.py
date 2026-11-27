@@ -98,8 +98,12 @@ def source_links(m: LoadedMap, source_ids: list[str]) -> str:
 
 def provenance_label(claim: Claim) -> str:
     """Issue #23: tell readers a person rewrote this claim."""
-    edited = claim.ai_text is not None and claim.text != claim.ai_text  # TODO: use claim.human_edited
-    return " · ✍️ 人工修改" if edited else ""
+    return " · ✍️ 人工修改" if claim.human_edited else ""
+
+
+def original_text_note(claim: Claim) -> str | None:
+    """Issue #23: the AI's original wording, shown to the existing member only."""
+    return f"原本 AI 寫的：{claim.ai_text}" if claim.human_edited else None
 
 
 def render_claim(store: Store, m: LoadedMap, claim: Claim, role: str) -> None:
@@ -109,6 +113,9 @@ def render_claim(store: Store, m: LoadedMap, claim: Claim, role: str) -> None:
         st.warning("⚠ 來源有問題：" + "；".join(claim.problems))
     if role != ROLE_BOB:
         return
+    note = original_text_note(claim)
+    if note:
+        st.caption(note)
     edit_key = f"editing-{m.map_id}-{claim.id}"
     cols = st.columns([1, 1, 1, 6])
     if cols[0].button("確認", key=f"confirm-{claim.id}"):
