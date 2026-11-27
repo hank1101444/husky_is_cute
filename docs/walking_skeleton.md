@@ -1,9 +1,8 @@
 # Walking Skeleton：團隊工作單
 ## 一次會議，四人一起 | 約 75 分鐘 | 每隊一份
 
-> **狀態：會議已完成（2026-11-27 22:00 – 11-28 01:00），PR #25 已合併。** 3b「誰講解」一欄待 Shen 的紀錄確認。 會前草稿由 Hank（code steward）用 Claude Code、依 `main`（`89d69b6`）
-> 上的程式碼準備；Part 1、Part 2 與 Part 4 的安排已由四人確認。標示 *（預定）* 的是已分工、尚未完成的工作。
-> 其餘空白欄位依實際結果填寫，不確定就留空，不要猜。
+> **狀態：會議已完成（2026-11-27 22:00 – 11-28 01:00），PR #25 已合併。** 3b 的講解者已由 Part 3 記錄者 Shen 確認。會前草稿由 Hank（code steward）用 Claude Code、依 `main`（`89d69b6`）
+> 上的程式碼準備；Part 1、Part 2 與 Part 4 的安排已由四人確認，其餘欄位依會議實際結果填寫。
 
 **時間：** 2026-11-27 22:00 – 2026-11-28 01:00
 **地點／通話連結：** 線上，Google Meet
@@ -123,10 +122,12 @@
 
 | 區塊（合併順序） | 誰做的 | 誰講解 | 接上了嗎？（是／修了才接上／還沒） | 接的時候修了什麼 |
 |---|---|---|---|---|
-| 1. 失敗的測試（Hank，`skeleton/tests` `24043f0`） | hank1101444（用 Claude Code 協助） | *（預定）* ChingChingKao | 是：`walking-skeleton` 的起點，2 failed、154 passed | — |
-| 2. `Claim.human_edited`（Ching，`skeleton/model` `ef35b50`） | ChingChingKao | *（預定）* TiffanyChen-tc | 是：2 failed、157 passed（她的 3 個新測試通過） | 不需要修 |
-| 3. `provenance_label`（Tiffany，`skeleton/label` `1450497`） | TiffanyChen-tc | *（預定）* ShenChiaoXiuan | 是：1 failed、158 passed | 不需要修 |
-| 4. `original_text_note`（Shen，`skeleton/original` `4a9da37`）+ 接進 `render_claim()` | ShenChiaoXiuan | *（預定）* hank1101444 | 修了才接上：159 passed | `app.py` 衝突：Tiffany 和 Shen 都在 `render_claim()` 上面加了函式。兩個都保留，並把兩行暫用判斷換成 `claim.human_edited`（merge commit `6e68490`） |
+| 1. 失敗的測試（Hank，`skeleton/tests` `24043f0`） | hank1101444（用 Claude Code 協助） | ChingChingKao | 是：`walking-skeleton` 的起點，2 failed、154 passed | — |
+| 2. `Claim.human_edited`（Ching，`skeleton/model` `ef35b50`） | ChingChingKao | TiffanyChen-tc | 是：2 failed、157 passed（她的 3 個新測試通過） | 不需要修 |
+| 3. `provenance_label`（Tiffany，`skeleton/label` `1450497`） | TiffanyChen-tc | ShenChiaoXiuan | 是：1 failed、158 passed | 不需要修 |
+| 4. `original_text_note`（Shen，`skeleton/original` `4a9da37`）+ 接進 `render_claim()` | ShenChiaoXiuan | hank1101444 | 修了才接上：159 passed | `app.py` 衝突：Tiffany 和 Shen 都在 `render_claim()` 上面加了函式。兩個都保留，並把兩行暫用判斷換成 `claim.human_edited`（merge commit `6e68490`） |
+
+**講解情況**（記錄者 Shen）：四塊都由表上的非作者講解，沒有講不清楚的地方，也沒有人需要補充。
 
 **每接一塊要跑的檢查：**
 
@@ -214,7 +215,7 @@ python -m streamlit run src/onboarding_map/app.py
 ## 快速檢查（給我們自己，不評分）
 
 ☑ 四個人都出席了
-☐ 四個人都做了一塊，而且每塊都由不是作者的人講解過
+☑ 四個人都做了一塊，而且每塊都由不是作者的人講解過
 ☑ 我們有一句共識，說明工具在做什麼
 ☑ 各塊接起來了，新切片能跑（就算有些部分是假的）
 ☑ PR 由 steward review、至少一則真正的留言，並已合併
