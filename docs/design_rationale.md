@@ -2,7 +2,7 @@
 
 Key interaction design decisions in the MVP, and what shaped each one. Evidence sources:
 CP1 interviews (2026-10-24, two first-year master's students who took over existing codebases),
-the CP1 design sketch, our own pilot, and user-testing sessions (§3, to be filled in).
+the CP1 design sketch, our own pilot, and two user-testing sessions with students outside the team (§3).
 Decisions that changed scope or architecture are also in [`DECISIONS.md`](../DECISIONS.md).
 
 ## 1. Decisions and what shaped them
@@ -34,32 +34,91 @@ sessions**: CP2 requires sessions with real users outside the team (§3).
 **What P2 suggests we test with real users:** whether new users understand, *without help*, what
 the buttons do and what 「無紀錄的理由」 means. If they still don't, the guide is not enough.
 
-## 3. User-testing sessions (real users outside the team) — TO BE FILLED IN
+## 3. User-testing sessions (real users outside the team)
 
-CP2 requires at least two. Method from CP1 §4: the participant does the six onboarding tasks on an
-unfamiliar repo with the map, while a teammate plays the existing member. Leave a field empty
-rather than guessing.
+**Method as run** (differs from the CP1 §4 plan; see "Limits" below). Two 15-minute online
+sessions on Google Meet. A teammate shared their screen with the demo map of this repository
+(Bob: 「載入示範地圖（不需 API key）」, then switched to 「新成員 (Alice)」); the participant answered
+aloud and asked the facilitator to scroll or open things. The facilitator did not explain buttons or
+give hints. Script, tasks and answer key: T1–T4 required, T5–T6 if time allowed, then Q1–Q4.
+
+| # | Task | Counts as correct (decided before the sessions) |
+|---|---|---|
+| T1 | Name the main modules | At least 3 of 4: GitHub 讀取, 地圖產生與驗證, 資料儲存, 網頁介面 |
+| T2 | Which file reads GitHub data? | `github_fetcher.py` |
+| T3 | How do 「GitHub 讀取」 and 「地圖產生」 relate? | Data flows from the first to the second |
+| T4 | Why Streamlit + SQLite, and where did you see it? | One reason (Python only / fastest two-person version) **and** the source (`DECISIONS.md`) |
+| T5 | How do you run the project? (optional) | README: `conda env create` → `conda activate husky` → `streamlit run …` |
+| T6 | Which file would you edit to change 「✍️ 人工修改」? (optional) | `app.py` |
+
+Correct / partial below was scored by us from the written answers against this key.
+Quotes are the participants' words, lightly condensed by the note-taker.
 
 ### Session 1
 
-- **Date / place / duration:**
-- **Participant:** (role, e.g. "first-year master's student, has joined an existing lab codebase"; no names)
-- **Repository used:**
-- **Six tasks** (time · correct? · questions asked to the "existing member"):
-  1. Name the main modules:
-  2. Find the file where a given feature is implemented:
-  3. Find how to run the project:
-  4. Explain how two modules relate:
-  5. Find the reason behind one recorded design decision:
-  6. Say which file they would edit first for a given small change:
-- **Existing-member side** (if tested): minutes to review; claims confirmed / edited / flagged (from the stats box).
-- **What they said / where they got stuck** (quotes, translated):
-- **Did they understand the buttons and 「無紀錄的理由」 without help?**
-- **Changes we made because of this session** (and the PR / DECISIONS entry):
+- **Date / duration:** *not recorded* (15-minute format)
+- **Participant:** computer-science student with GitHub project experience; not a team member
+- **Repository used:** this repository, through the hand-written demo map (no Claude call)
+- **Tasks** (time not recorded; no help from the facilitator recorded):
+
+  | Task | Result | What they said |
+  |---|---|---|
+  | T1 | Correct (4/4) | 「GitHub 資料讀取、地圖產生、資料儲存，還有網頁介面」 |
+  | T2 | Correct | 「應該是 github_fetcher.py，我看檔名就滿明顯的」 |
+  | T3 | Correct | 「先取得專案資訊，然後把資料傳給地圖產生模組」 |
+  | T4 | Correct | Reason (Python, fastest version two people can use, no complex front/back-end split) and source (`DECISIONS.md`) |
+  | T5 | Partial | README → install the environment → set the API key → start with Streamlit; no commands named, and 「可能要真的照著指令跑一次才會確定」. (The demo map needs no API key.) |
+  | T6 | Correct | `app.py`, 「因為這應該是畫面顯示的部分」 |
+
+- **Q1 🟡 / ✅:** 🟡 = AI-generated and not yet checked; ✅ = checked by a person, more trustworthy. Correct.
+- **Q2 「無紀錄的理由」:** 「GitHub 裡沒有找到相關的設計原因，不代表真的沒有原因，只是目前沒有資料可以證明」. Correct.
+- **Q3 rating:** **4 / 5.** Helped because they did not have to read code first to know the modules and what each does; some relations were only clear after opening the source.
+- **Q4 stuck / suggestion:** 「有些來源連結比較多，我一開始不知道要點哪個」; suggests marking the most important source.
+- **Did they understand the labels and 「無紀錄的理由」 without help?** Yes, both.
+- **Changes we made because of this session:** none yet; see the "User testing findings" draft in `DECISIONS.md`.
 
 ### Session 2
 
-(same fields)
+- **Date / duration:** *not recorded* (15-minute format)
+- **Participant:** student who has used GitHub but did not know this project; not a team member
+- **Repository used:** this repository, through the demo map
+- **Tasks** (time not recorded; no help from the facilitator recorded):
+
+  | Task | Result | What they said |
+  |---|---|---|
+  | T1 | Correct (4/4) | 「讀 GitHub 資料的，然後有 AI 整理地圖，還有存資料跟顯示畫面的部分。大概是這幾個吧」 |
+  | T2 | Correct, after self-correction | First guessed `app.py`, then corrected to `github_fetcher.py` from the module description |
+  | T3 | Correct | 「沒有前面的資料，後面應該也沒辦法產生」 |
+  | T4 | Partial | Guessed 「比較簡單、比較快開發吧？」; 「我一開始沒看到這個原因寫在哪裡，找了一下才發現可以點來源」. Did not name `DECISIONS.md` |
+  | T5 | Partial | Knows to read the README; would copy the setup commands and try them |
+  | T6 | Correct, unsure | `app.py`, guessed from 「跟畫面有關的程式」 |
+
+- **Q1 🟡 / ✅:** 「我一開始以為黃色是有問題的意思，後來看說明才知道是 AI 推論、還沒確認」. Correct after reading the in-page guide.
+- **Q2 「無紀錄的理由」:** Unsure: 「不知道是 AI 不知道原因，還是原本開發者沒有寫」; one more sentence of explanation would help.
+- **Q3 rating:** **3 / 5.** Easier than the GitHub file list and gave a sense of what the project does, but module names are still technical and needed time with the descriptions.
+- **Q4 stuck / suggestion:** explain 「推論」 vs 「已確認」 more clearly; a simple arrow diagram of how data moves from one module to the next.
+- **Did they understand the labels and 「無紀錄的理由」 without help?** Labels: only after reading the guide. 「無紀錄的理由」: no.
+- **Changes we made because of this session:** none yet; see the "User testing findings" draft in `DECISIONS.md`.
+
+### What the two sessions show
+
+| Finding | Session 1 | Session 2 | Ties to |
+|---|---|---|---|
+| The module list answers "what is in this repo": T1–T3 all correct | ✓ | ✓ (T2 after self-correction from the map) | D7, module list |
+| **Reasons are hard to locate.** The reason was on the map only behind a source link | Some relations needed the source; too many links, which one first? | Did not see where the reason was written; found the source link after searching | D1 |
+| **🟡 can read as a warning** before the guide is read | — | Read 🟡 as "something is wrong" | D3, D10 |
+| **「無紀錄的理由」 is ambiguous for a new member.** Alice's in-page guide explains 🟡 / ✅ but not this phrase (only Bob's guide does) | Understood | Did not know whether the AI or the developers lacked the reason | D2, D10 |
+| Requests | Mark the most important source | Arrow diagram of data flow; plainer module names | — |
+
+On P2's open question (§2: do new users understand the buttons and 「無紀錄的理由」 without help?):
+one participant did; the other needed the guide for the labels and still did not understand
+「無紀錄的理由」. The in-page guide helps but is not sufficient on its own.
+
+**Limits.** Two participants; no timings were recorded, so nothing here speaks to speed. The
+participant watched the facilitator's screen instead of using the app, so we did not see what they
+would click first, and the existing-member side (Bob's review) was not tested. The demo map was
+written by the team, so these sessions test the map's presentation, not Claude's drafting. The
+repository is our own project, which participants may have heard about.
 
 ## 4. Open questions
 
