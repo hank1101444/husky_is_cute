@@ -10,14 +10,17 @@ Where we have no evidence, this report says so.
 
 ## 1. What we set out to show (from CP1)
 
-CP1 defined success as: new members understand an unfamiliar course project **faster and more
-accurately** with the map than with the team's usual onboarding (asking people, reading the README,
-code, PRs and issues). We planned to measure, on onboarding tasks:
+CP1 (§4.1, submitted 2026-10-25) defined success as: new members answer a fixed set of onboarding
+questions about an unfamiliar repository **faster, with at least the same accuracy, and with fewer
+clarification questions** to an existing member than when they use only the repository's GitHub pages.
+Each participant was to do six onboarding tasks on two comparable repositories, one with the map and
+one with GitHub only (order swapped for half). We planned to measure:
 
-- time to complete the tasks;
-- accuracy on project-comprehension questions;
-- number of clarification questions asked to an existing member;
-- whether participants say the map made the project easier to understand.
+- time to finish the six tasks;
+- number of tasks answered correctly;
+- number of questions asked to the "existing member" (a teammate);
+- share of AI claims the existing member accepts without editing, and minutes the check takes;
+- a short post-task survey (five 1–5 questions and one open question).
 
 **AI–human boundary (unchanged in spirit, now with Claude):** Claude drafts the map from the
 repository's own records and must cite a source for every claim, or say 「無紀錄的理由」. It decides
@@ -29,7 +32,7 @@ what to trust, with the source links and the 🟡/✅/⛔ status in front of the
 | CP1 plan | What changed | Why | Record |
 |---|---|---|---|
 | Gemini API | Claude API (`claude-sonnet-5-5`) | The course provides Claude API access | `DECISIONS.md` 2026-11-23 |
-| ≥ 5 participants before judging success | 2 sessions by CP2 (the course minimum); 5 is now the Phase 3 target | One week between MVP and CP2 | this report |
+| ≥ 6 participants, each on two repositories (with / without the map) | 2 sessions by CP2 (the course minimum), with the map only; 6 with both conditions is now the Phase 3 target | One week between MVP and CP2 | this report |
 | Compare with the existing onboarding process | No "without the map" condition has been run yet, so no speed comparison is possible | Two sessions are too few to split into two conditions | this report, §5 |
 | "Share of claims accepted without edits" | Defined: a claim counts as edited only if its text differs from the AI's original | The label and the stats box used different rules (found in review of PR #25) | `DECISIONS.md` 2026-11-28 |
 
@@ -47,12 +50,13 @@ what to trust, with the source links and the 🟡/✅/⛔ status in front of the
 
 | CP1 criterion | Threshold | Status | Evidence |
 |---|---|---|---|
-| Participants | ≥ 5 target users | **Not met.** 2 sessions held (the CP2 minimum) | E5 |
-| Faster with the map than without | ≥ 4 of 5 faster | **Untested.** No "without the map" condition | — |
-| Comprehension accuracy | ≥ 80 % correct with the map | **Met on paper, too few to judge.** Required tasks T1–T4: 7 of 8 correct (88 %), 1 partial. All six tasks: 9 of 12 correct (75 %), 3 partial (T4 once, T5 twice). Scored by us from the notes against an answer key written before the sessions | E5 |
-| Perceived help | ≥ 4 of 5 say it helped | **Mixed.** Ratings 4/5 and 3/5; both said it was easier than starting from the code or the file list | E5 |
+| Participants | ≥ 6 from outside the team complete both conditions | **Not met.** 2 sessions held (the CP2 minimum), with the map only | E5 |
+| Faster with the map than without | ≥ 4 of 6 faster, median time down ≥ 25 % | **Untested.** No "without the map" condition and no timings | — |
+| Comprehension accuracy | ≥ 70 % with the map, and not lower than without it | **With-map part met on paper, too few to judge; "not lower than without" untested.** Required tasks T1–T4: 7 of 8 correct (88 %), 1 partial. All six tasks: 9 of 12 correct (75 %), 3 partial (T4 once, T5 twice). Scored by us from the notes against an answer key written before the sessions | E5 |
+| Fewer questions to the existing member | Fewer with the map in ≥ 4 of 6 | **Untested.** No comparison condition, and the sessions had no one in the existing-member role; no such questions were recorded | E5 |
+| Perceived help | (no CP1 threshold; post-task survey) | **Mixed.** Ratings 4/5 and 3/5; both said it was easier than starting from the code or the file list | E5 |
 | AI claims are trustworthy enough to help | (no CP1 number) | **Partial.** 7 of 8 claims supported in one outside review; suite 13/13 | E1, E4 |
-| Existing member's review effort | (CP1 §3.3 open question) | **Untested with real users.** The stats box records review minutes and accepted / edited / flagged counts, but no existing member outside the team has reviewed a map | — |
+| Existing member's review effort | ≥ 80 % of AI claims accepted without edits; check takes ≤ 15 minutes | **Untested with real users.** The stats box records review minutes and accepted / edited / flagged counts, but no existing member outside the team has reviewed a map | — |
 
 ## 5. What is untested, and why it matters
 
@@ -81,8 +85,9 @@ what to trust, with the source links and the 🟡/✅/⛔ status in front of the
 
 ## 7. Next steps (Phase 3)
 
-1. Reach the CP1 threshold of 5 participants, with a "without the map" condition (README and GitHub
-   only) on a matched repository, so speed and accuracy can be compared.
+1. Reach the CP1 threshold: 6 participants who each do the six tasks on two matched repositories,
+   one with the map and one with GitHub only (order swapped for half), so speed, accuracy and
+   questions can be compared.
 2. Measure citation support on more claims: for each map, an outside reader checks every claim against
    its source (extends E4).
 3. Fix #22 with a regression case in the prompt suite, and record before/after results in
