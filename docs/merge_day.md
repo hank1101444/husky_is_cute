@@ -11,8 +11,8 @@
 
 **時間：** 2026-11-28 00:57（#26 合併）、01:07（#27 合併）；刪除 branch、fresh clone 測試在同日稍後
 **地點／通話連結：** 線上（待填）
-**出席：** （待填）☐ hank1101444 ☐ TiffanyChen-tc ☐ ChingChingKao ☐ ShenChiaoXiuan
-**缺席者與原因：** （待填）
+**出席：** ☑ hank1101444 ☑ TiffanyChen-tc ☑ ChingChingKao ☑ ShenChiaoXiuan
+**缺席者與原因：** 無
 
 **CP2 要交的：**
 1. `DECISIONS.md` 中的合併計畫條目（Part 0），並在最後補上**結果**（Part 4）
@@ -113,7 +113,7 @@
 
 | | |
 |---|---|
-| 誰做的 | （待填：hank1101444 以外的組員） |
+| 誰做的 | ShenChiaoXiuan |
 | 只看 README 就能完成嗎？（可以／部分／不行） | 可以 |
 | README 少了什麼？ | 沒有回報缺漏 |
 | 主要任務從頭到尾都成功嗎？ | 成功（依 hank1101444 轉述：「測試沒問題」） |
@@ -153,9 +153,9 @@
 ## 快速檢查（給我們自己，不評分）
 
 ☑ 合併計畫在會議開始前就在 `DECISIONS.md` 裡（在 #26 的 branch 上，隨 #26 合併）
-☐ 四個人都在（待填）
+☑ 四個人都在
 ☑ 每個開著的 PR 都合併了，或附理由關掉（#4 合併後）
 ☐ 每次合併後都在 `main` 上跑了測試和 app（測試每次都跑了；app 只在 #27 之後檢查）
-☑ 由 steward 以外的人做了 fresh clone 測試（姓名待填）
+☑ 由 steward 以外的人做了 fresh clone 測試（ShenChiaoXiuan）
 ☑ 結果已寫在合併計畫下方
 ☑ 這份文件存成 `docs/merge_day.md`
