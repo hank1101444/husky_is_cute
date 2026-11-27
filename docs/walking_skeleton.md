@@ -92,15 +92,15 @@
 
 | 誰 | 任務 | 收到 | 回傳 | Branch 名稱 |
 |---|---|---|---|---|
-| ChingChingKao | 在 `models.py` 加 `Claim.human_edited` property，並在 `tests/test_models.py` 加測試（情境：改寫後不同、與 AI 原文相同、`ai_text` 為 `None`）；只做資料模型判斷，不碰 Streamlit 顯示 | 一個 `Claim` | `bool`：只有 `ai_text` 有值且 `text != ai_text` 時為 `True` | `walking-skeleton`（共用，第 1 個 commit） |
-| TiffanyChen-tc | 在 `app.py` 加 `provenance_label(claim)`；驗收標準是讓 Hank 的對應 AppTest 變綠（`app.py` import 時會執行 `main()`，不適合單獨寫單元測試） | 一個 `Claim` | 有修改時回傳 `" · ✍️ 人工修改"`，否則 `""` | `walking-skeleton`（共用，第 2 個 commit） |
-| ShenChiaoXiuan | 在 `app.py` 加 `original_text_note(claim)`；驗收標準是讓 Hank 的對應 AppTest 變綠（`app.py` import 時會執行 `main()`，不適合單獨寫單元測試） | 一個 `Claim` | 有修改時回傳 `"原本 AI 寫的：<ai_text>"`，否則 `None` | `walking-skeleton`（共用，第 3 個 commit） |
-| hank1101444 | **先寫測試：** 在 `tests/test_app.py` 加兩個在 `main` 上會失敗的 AppTest（Alice 在修改過的說法上看到「人工修改」、沒修改的看不到；只有 Bob 看得到「原本 AI 寫的」） | 預先存好的地圖 + `store.review_claim(..., "edit", ...)` | 各塊接上後就會通過的失敗測試 | `skeleton/tests`，再成為 `walking-skeleton` 的起點 |
+| ChingChingKao | 在 `models.py` 加 `Claim.human_edited` property，並在 `tests/test_models.py` 加測試（情境：改寫後不同、與 AI 原文相同、`ai_text` 為 `None`）；只做資料模型判斷，不碰 Streamlit 顯示 | 一個 `Claim` | `bool`：只有 `ai_text` 有值且 `text != ai_text` 時為 `True` | `skeleton/model` |
+| TiffanyChen-tc | 在 `app.py` 加 `provenance_label(claim)`；驗收標準是讓 Hank 的對應 AppTest 變綠（`app.py` import 時會執行 `main()`，不適合單獨寫單元測試） | 一個 `Claim` | 有修改時回傳 `" · ✍️ 人工修改"`，否則 `""` | `skeleton/label` |
+| ShenChiaoXiuan | 在 `app.py` 加 `original_text_note(claim)`；驗收標準是讓 Hank 的對應 AppTest 變綠（`app.py` import 時會執行 `main()`，不適合單獨寫單元測試） | 一個 `Claim` | 有修改時回傳 `"原本 AI 寫的：<ai_text>"`，否則 `None` | `skeleton/original` |
+| hank1101444 | **先寫測試：** 在 `tests/test_app.py` 加兩個在 `main` 上會失敗的 AppTest（Alice 在修改過的說法上看到「人工修改」、沒修改的看不到；只有 Bob 看得到「原本 AI 寫的」） | 預先存好的地圖 + `store.review_claim(..., "edit", ...)` | 各塊接上後就會通過的失敗測試 | `skeleton/tests`（已 push，也是 `walking-skeleton` 的起點） |
 
 接線（在 Part 3b 一起做，不是一個人做）：`render_claim()` 在兩個角色的狀態標籤後面加上
 `provenance_label(claim)`，並只對 Bob 用 caption 顯示 `original_text_note(claim)`。
 
-**順序與假資料：** 三人依序在同一個 branch 上 commit（Ching → Tiffany → Shen），後面的人一開始就拿得到 `claim.human_edited`，所以不需要先寫假的判斷。
+**model 那塊接上前的約定假資料：** Tiffany 和 Shen 先寫 `edited = claim.ai_text is not None and claim.text != claim.ai_text`（加註 `# TODO: use claim.human_edited`），接到 `walking-skeleton` 時再改用 `claim.human_edited`。每人都從 `origin/walking-skeleton` 開自己的 branch，同時做。
 
 **僅 Route 2：只有作者能講解的框**（會後變成配對或 review 任務）：
 
@@ -118,8 +118,8 @@
 **3a. 各自做（20 分鐘）**，在自己的 branch 上，照 Part 2 講好的接口做。可以用 AI 工具，但留下來的東西你要講得出來。
 卡住約五分鐘？就在你的邊界用約定好的格式回傳假資料，並寫下你假了什麼。
 
-**3b. 一起接（10 分鐘，同一個共享畫面）**，依順序一塊一塊 commit 到共用的 `walking-skeleton` branch（`skeleton` 這個名字和 `skeleton/tests` 在 git 裡會衝突，所以改名）。
-每一塊：由不是作者的人說明它在做什麼；push 後跑 `pytest` 和範例；失敗就一起修。預期紅燈數：2 → 2 → 1 → 0。
+**3b. 一起接（10 分鐘，同一個共享畫面）**，依順序一塊一塊合進整合用的 `walking-skeleton` branch（worksheet 原本叫 `skeleton`，但這個名字和 `skeleton/tests` 在 git 裡會衝突，所以改名）。
+每一塊：由不是作者的人說明它在做什麼；合進去；跑 `pytest` 和範例；失敗就一起修。Hank 分享畫面操作合併。
 
 | 區塊 *（預定順序）* | 誰做的 | 誰講解 | 接上了嗎？（是／修了才接上／還沒） | 接的時候修了什麼 |
 |---|---|---|---|---|
