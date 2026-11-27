@@ -72,9 +72,9 @@
 | 1：#26 `docs/team-sessions`（ShenChiaoXiuan 開） | hank1101444（按 merge） | hank1101444（steward：留言請改 *How I checked it* 的勾選，Shen 改好後 approve） |
 | 2：#27 `docs/user-testing`（ChingChingKao 開） | TiffanyChen-tc（按 merge） | TiffanyChen-tc（留言後 approve） |
 | 3：刪除 23 個已合併的遠端 branch | hank1101444（用 Claude Code） | — |
-| 4：#__ `docs/merge-day-outcome`（這份紀錄與 Outcome） | （待填） | （待填） |
+| 4：#28 `docs/merge-day-outcome`（這份紀錄與 Outcome） | ShenChiaoXiuan（按 merge） | ShenChiaoXiuan |
 
-> 目前 driver 只有兩個人。#4 請 ChingChingKao 或 ShenChiaoXiuan 合併，才滿足「至少三個人當過」。
+> 三個人當過 driver：hank1101444、TiffanyChen-tc、ShenChiaoXiuan。
 
 ---
 
@@ -93,7 +93,7 @@
 | 1 | #26 `docs/team-sessions` | GitHub 上沒有 | — | 通過：`main` `7f8f753`，161 passed、13 deselected | 當時沒檢查；#27 合併後確認可以 |
 | 2 | #27 `docs/user-testing` | GitHub 上沒有。合併前把 `docs/team-sessions` 併進這個 branch 時，`docs/prompt_log.md` 尾端衝突：一邊在第 33 列補 #26，一邊在下一列新增一列 | 兩邊都保留（Claude Code，merge commit `c442220`），再跑 `pytest` 通過 | 通過：`main` `bdf91d1`，161 passed、13 deselected | 可以：headless 啟動，`/_stcore/health` 回 `ok` |
 | 3 | 刪除已合併的 branch | — | 先用 `git branch -r --merged origin/main` 確認 23 個都已合併，記下 SHA 再刪 | — | — |
-| 4 | #__ `docs/merge-day-outcome` | （待填） | | | |
+| 4 | #28 `docs/merge-day-outcome` | 沒有（從最新的 `main` 開出，只改文件） | — | 合併前在 branch 上：161 passed、13 deselected | 文件變更，不影響 app |
 
 > **跟計畫不同的地方：** #26、#27 在 2026-11-28 凌晨就合併了，比原訂的 merge day（11/29）早一天，沒有照 Part 2 的
 > 步驟 1–5 逐一在共享畫面上做，#26 合併後也沒有檢查 app。#27 合併時 `DECISIONS.md` 的「User testing findings」還是草稿，
@@ -133,7 +133,7 @@
 
 **團隊檢討**（誠實，每題一行）：
 
-*以下 1、2 由 Claude Code 依紀錄草擬，請組員確認或改寫；3 由四人確認。*
+*以下 1、2 由 Claude Code 依紀錄草擬、四人確認不改；3 由四人確認。*
 
 1. 什麼讓合併變得比需要的更難？（例如：branch 放太久、PR 太大、兩個人改同一個檔案）
 
@@ -155,7 +155,7 @@
 
 ☑ 合併計畫在會議開始前就在 `DECISIONS.md` 裡（在 #26 的 branch 上，隨 #26 合併）
 ☑ 四個人都在
-☑ 每個開著的 PR 都合併了，或附理由關掉（#4 合併後）
+☑ 每個開著的 PR 都合併了，或附理由關掉（#28 合併後）
 ☐ 每次合併後都在 `main` 上跑了測試和 app（測試每次都跑了；app 只在 #27 之後檢查）
 ☑ 由 steward 以外的人做了 fresh clone 測試（ShenChiaoXiuan）
 ☑ 結果已寫在合併計畫下方
