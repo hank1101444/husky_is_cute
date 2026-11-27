@@ -180,20 +180,20 @@ class Store:
 
     def stats(self, map_id: int) -> ReviewStats:
         with self._conn() as conn:
-            claims = conn.execute("SELECT claim_id, status FROM claims WHERE map_id = ?", (map_id,)).fetchall()
-            events = conn.execute("SELECT claim_id, action, at FROM events WHERE map_id = ? ORDER BY id",
-                                  (map_id,)).fetchall()
+            claims = conn.execute("SELECT status, text, ai_text FROM claims WHERE map_id = ?", (map_id,)).fetchall()
+            events = conn.execute("SELECT at FROM events WHERE map_id = ? ORDER BY id", (map_id,)).fetchall()
             n_questions = conn.execute("SELECT COUNT(*) FROM questions WHERE map_id = ?", (map_id,)).fetchone()[0]
-        edited_ids = {e["claim_id"] for e in events if e["action"] == "edit"}
         minutes = None
         if events:
             first, last = (datetime.fromisoformat(events[i]["at"]) for i in (0, -1))
             minutes = (last - first).total_seconds() / 60
+        # Current state, same definition as the 「人工修改」 label (Claim.human_edited): a verified claim
+        # counts as edited only while its text differs from the AI's; an edited-then-flagged claim is only flagged.
+        verified_edited = [c["text"] != c["ai_text"] for c in claims if c["status"] == "verified"]
         return ReviewStats(
             total=len(claims),
-            accepted_without_edit=sum(1 for c in claims if c["status"] == "verified" and c["claim_id"] not in edited_ids),
-            # Current state: a claim counts as edited only while it is still verified.
-            edited=sum(1 for c in claims if c["status"] == "verified" and c["claim_id"] in edited_ids),
+            accepted_without_edit=verified_edited.count(False),
+            edited=verified_edited.count(True),
             flagged=sum(1 for c in claims if c["status"] == "flagged"),
             review_minutes=minutes,
             questions=n_questions,

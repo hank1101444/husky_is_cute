@@ -400,3 +400,43 @@ def test_page_index_without_modules_has_no_module_group(app_env, snap, good_draf
     hrefs = [a.attrs["href"][1:] for a in root.find_all("a")]
     assert len(hrefs) == 2 and set(hrefs) <= _main_targets(at)
     assert "（沒有模組）" in page_text(at)
+
+
+# Walking skeleton slice (issue #23): mark claims a person has rewritten.
+EDITED_TEXT = "Bob 改寫：a 是程式的入口，負責把輸入交給 b。"
+ORIGINAL_NOTE = "原本 AI 寫的：負責接收輸入並呼叫 b。"
+
+
+def all_text(at: AppTest) -> str:
+    return " ".join([m.value for m in at.markdown] + [c.value for c in at.caption])
+
+
+@pytest.fixture
+def seeded_edited(app_env, snap, good_draft):
+    store = Store(app_env)
+    map_id = store.save_map(snap, good_draft, validate(good_draft, snap))
+    store.review_claim(map_id, "m:a:purpose", "edit", EDITED_TEXT)
+    store.review_claim(map_id, "m:b:purpose", "confirm")
+    return store
+
+
+def test_alice_sees_human_edited_label_only_on_edited_claim(seeded_edited):
+    at = run_app()
+    at.sidebar.radio[0].set_value("新成員 (Alice)").run()
+    assert not at.exception
+    lines = [m.value for m in at.markdown]
+    edited = next(v for v in lines if v.endswith(EDITED_TEXT))
+    confirmed_only = next(v for v in lines if v.endswith("· 處理資料。"))
+    assert "人工修改" in edited
+    assert "人工修改" not in confirmed_only
+
+
+def test_only_bob_sees_original_ai_text(seeded_edited):
+    bob = run_app()
+    assert not bob.exception
+    assert ORIGINAL_NOTE in all_text(bob)
+
+    alice = run_app()
+    alice.sidebar.radio[0].set_value("新成員 (Alice)").run()
+    assert not alice.exception
+    assert "原本 AI 寫的" not in all_text(alice)
